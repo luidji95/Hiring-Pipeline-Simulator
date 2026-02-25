@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { LandingPage } from "./page/LandingPage";
-import { WorkspacePage } from "./page/WorkSpacePage";
+import { LandingPage } from "./page/LandingPage/LandingPage";
+import { WorkspacePage } from "./page/WorkspacePage/WorkspacePage";
 
 
 

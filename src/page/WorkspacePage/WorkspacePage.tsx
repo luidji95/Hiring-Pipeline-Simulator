@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import type { WorkspaceInstance } from "../features/workspace/workspace.types";
-import { getInstance } from "../features/storage/hpsStorage";
+import type { WorkspaceInstance } from "../../features/workspace/workspace.types";
+import { getInstance } from "../../features/storage/hpsStorage";
+import { KanbanBoard } from "../../features/workspace/ui/KanbanBoard/KanbanBoard";
 
 export const WorkspacePage = () => {
   const { id } = useParams();
@@ -28,6 +29,7 @@ export const WorkspacePage = () => {
       <Link to="/">Back</Link>
       <h2>{instance.name}</h2>
       <p>{instance.id}</p>
+      <KanbanBoard instance={instance} />
     </div>
   );
 

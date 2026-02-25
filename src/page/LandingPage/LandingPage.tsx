@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./css/landing.css";
+import "../LandingPage/landing.css";
 
-import { WORKSPACE_TEMPLATES } from "../features/workspace/workspaceTemplates";
-import type { WorkspaceIndexItem } from "../features/workspace/workspace.types";
+import { WORKSPACE_TEMPLATES } from "../../features/workspace/workspaceTemplates";
+import type { WorkspaceIndexItem } from "../../features/workspace/workspace.types";
 
-import { createCustomInstance,createInstanceFromTemplate,getInstancesIndex,clearAllHpsData,clearDemoInstances } from "../features/storage/hpsStorage";
+import { createCustomInstance,createInstanceFromTemplate,getInstancesIndex,clearAllHpsData,clearDemoInstances } from "../../features/storage/hpsStorage";
 
 const formatDate = (iso: string) => {
   const d = new Date(iso);
