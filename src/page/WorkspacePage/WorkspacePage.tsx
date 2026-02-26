@@ -29,7 +29,7 @@ export const WorkspacePage = () => {
       <Link to="/">Back</Link>
       <h2>{instance.name}</h2>
       <p>{instance.id}</p>
-      <KanbanBoard instance={instance} />
+      <KanbanBoard instance={instance} workspaceId={instance.id} />
     </div>
   );
 
