@@ -1,13 +1,32 @@
-
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
-import { getInstance } from "../../features/storage/hpsStorage";
-import type { Candidate } from "../../features/workspace/workspace.types";
+import {
+  addCandidateNote,
+  getCandidateTimeline,
+  getInstance,
+} from "../../features/storage/hpsStorage";
+import type {
+  Candidate,
+  CandidateEvent,
+  StageId,
+} from "../../features/workspace/workspace.types";
 
 type Params = {
   workspaceId: string;
   candidateId: string;
+};
+
+const formatIso = (iso: string) => {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 };
 
 export const CandidateDetails = () => {
@@ -17,6 +36,10 @@ export const CandidateDetails = () => {
   const [candidate, setCandidate] = useState<Candidate | null>(null);
   const [workspaceName, setWorkspaceName] = useState("");
   const [loading, setLoading] = useState(true);
+
+  const [events, setEvents] = useState<CandidateEvent[]>([]);
+  const [noteText, setNoteText] = useState("");
+  const [stageLabelById, setStageLabelById] = useState<Record<StageId, string> | null>(null);
 
   useEffect(() => {
     if (!workspaceId || !candidateId) {
@@ -36,13 +59,44 @@ export const CandidateDetails = () => {
       return;
     }
 
+    const stageMap = instance.stages.reduce((acc, s) => {
+      acc[s.id] = s.label;
+      return acc;
+    }, {} as Record<StageId, string>);
+
+    setStageLabelById(stageMap);
     setWorkspaceName(instance.name);
     setCandidate(found);
+
+    setEvents(getCandidateTimeline(workspaceId, candidateId));
     setLoading(false);
   }, [workspaceId, candidateId, navigate]);
 
   if (loading) return <div style={{ padding: 20 }}>Loading...</div>;
   if (!candidate) return null;
+
+  const formatEventText = (e: CandidateEvent) => {
+    if (e.type === "created") return "Candidate created";
+
+    if (e.type === "stage_moved") {
+      const from = stageLabelById?.[e.payload.fromStageId] ?? e.payload.fromStageId;
+      const to = stageLabelById?.[e.payload.toStageId] ?? e.payload.toStageId;
+      return `${from} → ${to} (Reason: ${e.payload.reason})`;
+    }
+
+    return e.payload.content;
+  };
+
+  const handleAddNote = () => {
+    const trimmed = noteText.trim();
+    if (!trimmed) return;
+
+    // workspaceId/candidateId are safe here because we already passed guards
+    addCandidateNote(workspaceId!, candidate.id, trimmed);
+
+    setEvents(getCandidateTimeline(workspaceId!, candidate.id));
+    setNoteText("");
+  };
 
   return (
     <div style={{ padding: 20 }}>
@@ -128,6 +182,41 @@ export const CandidateDetails = () => {
             </div>
           ) : (
             <p style={{ opacity: 0.7 }}>No tags</p>
+          )}
+        </div>
+
+        <div style={{ marginTop: 16 }}>
+          <h3 style={{ marginBottom: 8 }}>Add note</h3>
+
+          <textarea
+            value={noteText}
+            onChange={(e) => setNoteText(e.target.value)}
+            rows={3}
+            style={{ width: "100%", resize: "vertical" }}
+            placeholder="Write a note..."
+          />
+
+          <button type="button" onClick={handleAddNote} style={{ marginTop: 8 }}>
+            Add note
+          </button>
+        </div>
+
+        <div style={{ marginTop: 16 }}>
+          <h3 style={{ marginBottom: 8 }}>Timeline</h3>
+
+          {events.length === 0 ? (
+            <p style={{ opacity: 0.7 }}>No events yet</p>
+          ) : (
+            <ul style={{ paddingLeft: 18 }}>
+              {events.map((e) => (
+                <li key={e.id} style={{ marginBottom: 10 }}>
+                  <div style={{ fontSize: 12, opacity: 0.7 }}>
+                    {e.type} · {formatIso(e.createdAt)}
+                  </div>
+                  <div>{formatEventText(e)}</div>
+                </li>
+              ))}
+            </ul>
           )}
         </div>
       </div>
