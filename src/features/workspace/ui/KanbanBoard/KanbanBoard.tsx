@@ -5,9 +5,11 @@ import { StageColumn } from "../StageColumn/StageColumn";
 export const KanbanBoard = ({
   instance,
   workspaceId,
+  onChange,
 }: {
   instance: WorkspaceInstance;
   workspaceId: string;
+  onChange: () => void;
 }) => {
   const navigate = useNavigate();
 
@@ -28,6 +30,9 @@ export const KanbanBoard = ({
           candidateIds={instance.candidateIdsByStage[stage.id] ?? []}
           candidatesById={instance.candidatesById}
           onOpenCandidate={handleOpenCandidate}
+          workspaceId={workspaceId}
+          stages={instance.stages}
+          onChange={onChange}
         />
       ))}
     </div>

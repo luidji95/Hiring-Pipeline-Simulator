@@ -6,9 +6,21 @@ type Props = {
   candidateIds: string[];
   candidatesById: Record<string, Candidate>;
   onOpenCandidate: (candidateId: string) => void;
+
+  workspaceId: string;
+  stages: Stage[];
+  onChange: () => void;
 };
 
-export const StageColumn = ({ stage, candidateIds, candidatesById, onOpenCandidate }: Props) => {
+export const StageColumn = ({
+  stage,
+  candidateIds,
+  candidatesById,
+  onOpenCandidate,
+  workspaceId,
+  stages,
+  onChange,
+}: Props) => {
   return (
     <div className="stage">
       <h3>
@@ -23,7 +35,16 @@ export const StageColumn = ({ stage, candidateIds, candidatesById, onOpenCandida
             const c = candidatesById[id];
             if (!c) return null;
 
-            return <CandidateCard key={id} candidate={c} onOpen={onOpenCandidate} />;
+            return (
+              <CandidateCard
+                key={id}
+                candidate={c}
+                onOpen={onOpenCandidate}
+                workspaceId={workspaceId}
+                stages={stages}
+                onChange={onChange}
+              />
+            );
           })
         )}
       </div>

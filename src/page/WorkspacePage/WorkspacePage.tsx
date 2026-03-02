@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import type { WorkspaceInstance } from "../../features/workspace/workspace.types";
 import { getInstance } from "../../features/storage/hpsStorage";
@@ -10,7 +10,7 @@ export const WorkspacePage = () => {
 
   const [instance, setInstance] = useState<WorkspaceInstance | null>(null);
 
-  useEffect(() => {
+  const reload = useCallback(() => {
     if (!id) return;
 
     const inst = getInstance(id);
@@ -22,15 +22,23 @@ export const WorkspacePage = () => {
     setInstance(inst);
   }, [id, navigate]);
 
+  useEffect(() => {
+    reload();
+  }, [reload]);
+
   if (!instance) return null;
 
-   return (
+  return (
     <div>
       <Link to="/">Back</Link>
       <h2>{instance.name}</h2>
       <p>{instance.id}</p>
-      <KanbanBoard instance={instance} workspaceId={instance.id} />
+
+      <KanbanBoard
+        instance={instance}
+        workspaceId={instance.id}
+        onChange={reload}
+      />
     </div>
   );
-
 };
