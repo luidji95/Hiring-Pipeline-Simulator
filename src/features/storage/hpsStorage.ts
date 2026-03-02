@@ -11,6 +11,9 @@ import { WORKSPACE_TEMPLATES } from "../workspace/workspaceTemplates";
 const INDEX_KEY = "hps_instances_index";
 const instanceKey = (id: string) => `hps_instance_${id}`;
 
+const DEMO_MAP_KEY = "hps_demo_by_template";
+type DemoMap = Record<string, string>;
+
 const nowIso = () => new Date().toISOString();
 
 const uuid = () => {
@@ -67,6 +70,18 @@ export const saveInstance = (instance: WorkspaceInstance) => {
 export const deleteInstance = (id: string) => {
   localStorage.removeItem(instanceKey(id));
   removeIndexItem(id);
+};
+
+/*
+  Demo index persistence
+*/
+
+const getDemoMap = (): DemoMap => {
+  return safeJsonParse<DemoMap>(localStorage.getItem(DEMO_MAP_KEY), {});
+};
+
+const saveDemoMap = (map: DemoMap) => {
+  localStorage.setItem(DEMO_MAP_KEY, JSON.stringify(map));
 };
 
 /*
@@ -135,6 +150,17 @@ export const createInstanceFromTemplate = (
 ): string => {
   const tpl = findTemplate(templateId);
 
+  // Persistent demo per template (per device)
+  const demoMap = getDemoMap();
+  const existingId = demoMap[templateId];
+
+  if (existingId) {
+    const existing = getInstance(existingId);
+    if (existing && existing.sourceTemplateId === templateId) {
+      return existingId;
+    }
+  }
+
   const instance = buildInstanceBase(tpl.name, tpl.id);
   instance.stages = tpl.stages;
 
@@ -155,15 +181,22 @@ export const createInstanceFromTemplate = (
   }
 
   saveInstance(instance);
+  
 
-  const addToIndex = opts?.addToIndex ?? false; // IMPORTANT: default false
+  const addToIndex = opts?.addToIndex ?? false;
+
+  if (!addToIndex) {
+    demoMap[templateId] = instance.id;
+    saveDemoMap(demoMap);
+  }
+
   if (addToIndex) {
     upsertIndexItem({
-      id: instance.id,
-      name: instance.name,
-      createdAt: instance.createdAt,
-      sourceTemplateId: instance.sourceTemplateId ?? null,
-    });
+    id: instance.id,
+    name: instance.name,
+    createdAt: instance.createdAt,
+    sourceTemplateId: instance.sourceTemplateId ?? null,
+  });
   }
 
   return instance.id;
@@ -328,6 +361,7 @@ export const clearDemoInstances = () => {
   }
 
   keysToDelete.forEach((k) => localStorage.removeItem(k));
+  localStorage.removeItem(DEMO_MAP_KEY);
 };
 
 export const clearAllHpsData = () => {
@@ -340,4 +374,5 @@ export const clearAllHpsData = () => {
     if (key.startsWith("hps_instance_")) keysToDelete.push(key);
   }
   keysToDelete.forEach((k) => localStorage.removeItem(k));
+  localStorage.removeItem(DEMO_MAP_KEY);
 };
