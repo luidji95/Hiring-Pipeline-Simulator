@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { CandidateCard } from "../CandidateCard/CandidateCard";
+import { StageAddCandidateForm } from "./StageAddCandidateForm";
 import type { Candidate, Stage } from "../../workspace.types";
 
 type Props = {
@@ -21,11 +23,43 @@ export const StageColumn = ({
   stages,
   onChange,
 }: Props) => {
+  const [isAdding, setIsAdding] = useState(false);
+
+  const canAddHere = stage.id === "screening"; // ONLY screening
+
   return (
     <div className="stage">
-      <h3>
-        {stage.label} ({candidateIds.length})
-      </h3>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <h3 style={{ margin: 0 }}>
+          {stage.label} ({candidateIds.length})
+        </h3>
+
+        {canAddHere ? (
+          !isAdding ? (
+            <button type="button" onClick={() => setIsAdding(true)}>
+              + Add
+            </button>
+          ) : (
+            <button type="button" onClick={() => setIsAdding(false)}>
+              Cancel
+            </button>
+          )
+        ) : null}
+      </div>
+
+      {canAddHere && isAdding ? (
+        <div style={{ marginTop: 10 }}>
+          <StageAddCandidateForm
+            workspaceId={workspaceId}
+            stageId={stage.id}
+            onSuccess={() => {
+              onChange();
+              setIsAdding(false);
+            }}
+            onCancel={() => setIsAdding(false)}
+          />
+        </div>
+      ) : null}
 
       <div className="stage__list">
         {candidateIds.length === 0 ? (
