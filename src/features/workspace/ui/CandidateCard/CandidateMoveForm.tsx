@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Stage, StageId } from "../../workspace.types";
 import { moveCandidate } from "../../../storage/hpsStorage";
-
+import "../CandidateCard/candidateCard.css";
 type Props = {
   workspaceId: string;
   candidateId: string;
@@ -59,9 +59,13 @@ export const CandidateMoveForm = ({
   };
 
   return (
-    <div style={{ border: "1px solid #333", padding: 10, borderRadius: 6 }}>
-      <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-        <select value={toStageId} onChange={(e) => setToStageId(e.target.value as StageId)}>
+    <div className="candidate-move-form">
+      <div className="move-form__row">
+        <select 
+          className="move-form__select"
+          value={toStageId} 
+          onChange={(e) => setToStageId(e.target.value as StageId)}
+        >
           {options.map((s) => (
             <option key={s.id} value={s.id}>
               {s.label}
@@ -70,19 +74,20 @@ export const CandidateMoveForm = ({
         </select>
 
         <input
+          className="move-form__input"
           value={reason}
           onChange={(e) => setReason(e.target.value)}
           placeholder="Reason..."
-          style={{ flex: 1 }}
         />
       </div>
 
-      <div style={{ display: "flex", gap: 8 }}>
-        <button type="button" onClick={handleSubmit} style={{ flex: 1 }}>
+      <div className="move-form__actions">
+        <button type="button" className="btn-move-submit" onClick={handleSubmit}>
           Submit
         </button>
         <button
           type="button"
+          className="btn-move-cancel"
           onClick={() => {
             setError(null);
             onCancel();
@@ -92,7 +97,8 @@ export const CandidateMoveForm = ({
         </button>
       </div>
 
-      {error ? <div style={{ marginTop: 8, fontSize: 12, opacity: 0.85 }}>{error}</div> : null}
+      {error ? <div className="move-form__error">{error}</div> : null}
     </div>
   );
+
 };

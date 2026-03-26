@@ -1,0 +1,206 @@
+.details-page {
+  padding: 40px 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.details-nav {
+  width: 100%;
+  max-width: 900px;
+  margin-bottom: 20px;
+}
+
+.back-link {
+  text-decoration: none;
+  color: #6c757d;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: #1a1c1d;
+}
+
+.details-container {
+  background: white;
+  width: 100%;
+  max-width: 900px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  border: 1px solid #e9ecef;
+  overflow: hidden;
+}
+
+.details-header {
+  padding: 40px;
+  background: linear-gradient(to right, #ffffff, #fdfdfd);
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.candidate-full-name {
+  margin: 0 0 10px 0;
+  font-size: 28px;
+  color: #1a1c1d;
+  letter-spacing: -0.5px;
+}
+
+.candidate-badge {
+  background: #e7f5ff;
+  color: #1971c2;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.candidate-meta {
+  font-size: 15px;
+  color: #6c757d;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  min-height: 500px;
+}
+
+.info-section {
+  padding: 40px;
+  border-right: 1px solid #f1f3f5;
+  background: #fafbfc;
+}
+
+.timeline-section {
+  padding: 40px;
+}
+
+.section-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #adb5bd;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+}
+
+/* Links Grid */
+.links-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.link-item label {
+  display: block;
+  font-size: 11px;
+  color: #868e96;
+  margin-bottom: 4px;
+}
+
+.link-item span, .link-item a {
+  font-size: 14px;
+  color: #212529;
+  text-decoration: none;
+}
+
+.link-item a { color: #228be6; font-weight: 500; }
+
+/* Tags */
+.tags-container {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tag-pill {
+  background: #fff;
+  border: 1px solid #dee2e6;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: #495057;
+}
+
+/* Timeline */
+.note-input-container {
+  margin-bottom: 30px;
+}
+
+.note-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: none;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.btn-add-note {
+  background: #1a1c1d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.timeline-list {
+  position: relative;
+  padding-left: 20px;
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 24px;
+  border-left: 2px solid #f1f3f5;
+  padding-left: 25px;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -7px;
+  top: 4px;
+  width: 12px;
+  height: 12px;
+  background: #dee2e6;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.event-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.event-type {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #868e96;
+}
+
+.event-date {
+  font-size: 11px;
+  color: #adb5bd;
+}
+
+.event-content {
+  font-size: 14px;
+  color: #495057;
+  line-height: 1.5;
+}
+
+.event-reason {
+  color: #868e96;
+  font-style: italic;
+}

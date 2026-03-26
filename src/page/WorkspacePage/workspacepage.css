@@ -1,0 +1,26 @@
+/* workspacePage.css */
+.workspacePage {
+  min-height: 100vh;
+  background: #f8fafd;
+  color: #1e293b;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.workspacePage__content {
+  flex: 1;
+  padding: 24px 32px;
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+  background: #f8fafd;
+}
+
+/* Additional responsive for page content */
+@media (max-width: 768px) {
+  .workspacePage__content {
+    padding: 20px;
+  }
+}

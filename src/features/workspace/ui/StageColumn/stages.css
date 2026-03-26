@@ -1,0 +1,117 @@
+.stage-column {
+  min-width: 300px;
+  max-width: 300px;
+  background-color: #ebedef; /* Suptilna siva kao na slici */
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+}
+
+.stage-column__header {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stage-column__title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #495057;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stage-column__count {
+  font-size: 0.85rem;
+  color: #adb5bd;
+  margin-left: 8px;
+}
+
+.stage-column__list {
+  padding: 0 12px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+.btn-add-candidate {
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-add-candidate:hover {
+  background: #f1f3f5;
+  border-color: #ced4da;
+}
+
+.no-candidates {
+  text-align: center;
+  padding: 20px;
+  color: #adb5bd;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+.add-candidate-form {
+  background: white;
+  border-radius: 6px;
+  padding: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  margin-bottom: 12px;
+  border: 1px solid #e0e0e0;
+}
+
+.add-candidate-form input {
+  width: 100%;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  box-sizing: border-box; /* Jako bitno da padding ne kvari širinu */
+}
+
+.add-candidate-form input:focus {
+  outline: none;
+  border-color: #4dabf7;
+  box-shadow: 0 0 0 2px rgba(77, 171, 247, 0.2);
+}
+
+.add-candidate-form__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-submit {
+  background-color: #2fb344; /* Zelena kao na slici za "Publish" */
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  flex: 2;
+}
+
+.btn-cancel {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.form-error {
+  color: #e03131;
+  font-size: 0.75rem;
+  margin-top: 8px;
+}

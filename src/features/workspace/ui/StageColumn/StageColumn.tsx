@@ -2,13 +2,13 @@ import { useState } from "react";
 import { CandidateCard } from "../CandidateCard/CandidateCard";
 import { StageAddCandidateForm } from "./StageAddCandidateForm";
 import type { Candidate, Stage } from "../../workspace.types";
+import "../StageColumn/stages.css";
 
 type Props = {
   stage: Stage;
   candidateIds: string[];
   candidatesById: Record<string, Candidate>;
   onOpenCandidate: (candidateId: string) => void;
-
   workspaceId: string;
   stages: Stage[];
   onChange: () => void;
@@ -24,31 +24,30 @@ export const StageColumn = ({
   onChange,
 }: Props) => {
   const [isAdding, setIsAdding] = useState(false);
-
-  const canAddHere = stage.id === "screening"; // ONLY screening
+  
+  // Dozvoljavamo dodavanje samo u početnu fazu (screening)
+  const canAddHere = stage.id === "screening";
 
   return (
-    <div className="stage">
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h3 style={{ margin: 0 }}>
-          {stage.label} ({candidateIds.length})
+    <div className="stage-column">
+      <div className="stage-column__header">
+        <h3 className="stage-column__title">
+          {stage.label} <span className="stage-column__count">({candidateIds.length})</span>
         </h3>
-
-        {canAddHere ? (
-          !isAdding ? (
-            <button type="button" onClick={() => setIsAdding(true)}>
-              + Add
-            </button>
-          ) : (
-            <button type="button" onClick={() => setIsAdding(false)}>
-              Cancel
-            </button>
-          )
-        ) : null}
+        
+        {canAddHere && (
+          <button 
+            type="button" 
+            className="btn-add-candidate"
+            onClick={() => setIsAdding(!isAdding)}
+          >
+            {isAdding ? "Cancel" : "+ Add"}
+          </button>
+        )}
       </div>
 
-      {canAddHere && isAdding ? (
-        <div style={{ marginTop: 10 }}>
+      <div className="stage-column__content">
+        {canAddHere && isAdding && (
           <StageAddCandidateForm
             workspaceId={workspaceId}
             stageId={stage.id}
@@ -58,29 +57,29 @@ export const StageColumn = ({
             }}
             onCancel={() => setIsAdding(false)}
           />
-        </div>
-      ) : null}
-
-      <div className="stage__list">
-        {candidateIds.length === 0 ? (
-          <p style={{ opacity: 0.6, fontSize: 12 }}>No candidates</p>
-        ) : (
-          candidateIds.map((id) => {
-            const c = candidatesById[id];
-            if (!c) return null;
-
-            return (
-              <CandidateCard
-                key={id}
-                candidate={c}
-                onOpen={onOpenCandidate}
-                workspaceId={workspaceId}
-                stages={stages}
-                onChange={onChange}
-              />
-            );
-          })
         )}
+
+        <div className="stage__list">
+          {candidateIds.length === 0 ? (
+            <p className="no-candidates">No candidates</p>
+          ) : (
+            candidateIds.map((id) => {
+              const c = candidatesById[id];
+              if (!c) return null;
+
+              return (
+                <CandidateCard
+                  key={id}
+                  candidate={c}
+                  onOpen={onOpenCandidate}
+                  workspaceId={workspaceId}
+                  stages={stages}
+                  onChange={onChange}
+                />
+              );
+            })
+          )}
+        </div>
       </div>
     </div>
   );

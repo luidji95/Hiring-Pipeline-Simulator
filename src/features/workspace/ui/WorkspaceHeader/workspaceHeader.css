@@ -1,0 +1,115 @@
+/* workspaceHeader.css */
+.workspaceHeader {
+  padding: 24px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e2e8f0;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+.workspaceHeader__left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.workspaceHeader__back {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #4b5565;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 30px;
+  background: #f1f4f9;
+  transition: all 0.18s ease;
+}
+
+.workspaceHeader__back:hover {
+  background: #e5eaf2;
+  color: #1f2a41;
+}
+
+.workspaceHeader__titleWrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.workspaceHeader__title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+  color: #1e293b;
+  letter-spacing: -0.5px;
+}
+
+.workspaceHeader__badge {
+  padding: 4px 12px;
+  border-radius: 30px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #eef2f6;
+  border: 1px solid #d0d9e8;
+  color: #4a5a72;
+  text-transform: uppercase;
+}
+
+.workspaceHeader__badge--demo {
+  background: #e0f2fe;
+  border-color: #7ab7ef;
+  color: #0369a1;
+}
+
+.workspaceHeader__right {
+  flex-shrink: 0;
+}
+
+.workspaceHeader__addBtn {
+  padding: 10px 24px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: #3b82f6;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+  outline: none;
+}
+
+.workspaceHeader__addBtn:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+}
+
+/* Responsive for header */
+@media (max-width: 768px) {
+  .workspaceHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .workspaceHeader__left {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .workspaceHeader__title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .workspaceHeader__titleWrap {
+    flex-wrap: wrap;
+  }
+}

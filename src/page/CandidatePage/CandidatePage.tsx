@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-
 import {
   addCandidateNote,
   getCandidateTimeline,
@@ -11,6 +10,7 @@ import type {
   CandidateEvent,
   StageId,
 } from "../../features/workspace/workspace.types";
+import "../CandidatePage/candidatePage.css";
 
 type Params = {
   workspaceId: string;
@@ -20,7 +20,7 @@ type Params = {
 const formatIso = (iso: string) => {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleString("en-US", {
+  return d.toLocaleString("sr-RS", { // Možeš ostaviti en-US ako preferiraš
     month: "short",
     day: "2-digit",
     year: "numeric",
@@ -36,7 +36,6 @@ export const CandidateDetails = () => {
   const [candidate, setCandidate] = useState<Candidate | null>(null);
   const [workspaceName, setWorkspaceName] = useState("");
   const [loading, setLoading] = useState(true);
-
   const [events, setEvents] = useState<CandidateEvent[]>([]);
   const [noteText, setNoteText] = useState("");
   const [stageLabelById, setStageLabelById] = useState<Record<StageId, string> | null>(null);
@@ -67,157 +66,120 @@ export const CandidateDetails = () => {
     setStageLabelById(stageMap);
     setWorkspaceName(instance.name);
     setCandidate(found);
-
     setEvents(getCandidateTimeline(workspaceId, candidateId));
     setLoading(false);
   }, [workspaceId, candidateId, navigate]);
 
-  if (loading) return <div style={{ padding: 20 }}>Loading...</div>;
+  if (loading) return <div className="details-loading">Loading candidate profile...</div>;
   if (!candidate) return null;
 
   const formatEventText = (e: CandidateEvent) => {
-    if (e.type === "created") return "Candidate created";
-
+    if (e.type === "created") return "Candidate profile initialized";
     if (e.type === "stage_moved") {
       const from = stageLabelById?.[e.payload.fromStageId] ?? e.payload.fromStageId;
       const to = stageLabelById?.[e.payload.toStageId] ?? e.payload.toStageId;
-      return `${from} → ${to} (Reason: ${e.payload.reason})`;
+      return (
+        <span>
+          Moved from <strong>{from}</strong> to <strong>{to}</strong>
+          <br />
+          <small className="event-reason">Reason: {e.payload.reason}</small>
+        </span>
+      );
     }
-
     return e.payload.content;
   };
 
   const handleAddNote = () => {
     const trimmed = noteText.trim();
     if (!trimmed) return;
-
-    // workspaceId/candidateId are safe here because we already passed guards
     addCandidateNote(workspaceId!, candidate.id, trimmed);
-
     setEvents(getCandidateTimeline(workspaceId!, candidate.id));
     setNoteText("");
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <div style={{ marginBottom: 16 }}>
-        <Link to={`/workspace/${workspaceId}`}>← Back to {workspaceName}</Link>
+    <div className="details-page">
+      <div className="details-nav">
+        <Link to={`/workspace/${workspaceId}`} className="back-link">
+          ← Back to {workspaceName}
+        </Link>
       </div>
 
-      <div
-        style={{
-          border: "1px solid #333",
-          padding: 20,
-          borderRadius: 6,
-          maxWidth: 720,
-        }}
-      >
-        <h2 style={{ marginTop: 0 }}>
-          {candidate.firstName} {candidate.lastName}
-        </h2>
+      <div className="details-container">
+        {/* Header Sekcija */}
+        <header className="details-header">
+          <h2 className="candidate-full-name">
+            {candidate.firstName} {candidate.lastName}
+          </h2>
+          <div className="candidate-meta">
+            <span className="candidate-badge">{candidate.title}</span>
+            {candidate.company && <span className="meta-item"> @ {candidate.company}</span>}
+            {candidate.location && <span className="meta-item"> · {candidate.location}</span>}
+          </div>
+        </header>
 
-        <div style={{ opacity: 0.8, marginBottom: 12 }}>
-          {candidate.title}
-          {candidate.company ? ` · ${candidate.company}` : ""}
-          {candidate.location ? ` · ${candidate.location}` : ""}
-        </div>
-
-        <div style={{ marginTop: 12 }}>
-          <p>
-            <strong>Email:</strong> {candidate.email ?? "N/A"}
-          </p>
-
-          <p>
-            <strong>LinkedIn:</strong>{" "}
-            {candidate.linkedinUrl ? (
-              <a href={candidate.linkedinUrl} target="_blank" rel="noreferrer">
-                Open
-              </a>
-            ) : (
-              "N/A"
-            )}
-          </p>
-
-          <p>
-            <strong>GitHub:</strong>{" "}
-            {candidate.githubUrl ? (
-              <a href={candidate.githubUrl} target="_blank" rel="noreferrer">
-                Open
-              </a>
-            ) : (
-              "N/A"
-            )}
-          </p>
-
-          <p>
-            <strong>Portfolio:</strong>{" "}
-            {candidate.portfolioUrl ? (
-              <a href={candidate.portfolioUrl} target="_blank" rel="noreferrer">
-                Open
-              </a>
-            ) : (
-              "N/A"
-            )}
-          </p>
-        </div>
-
-        <div style={{ marginTop: 16 }}>
-          <h3 style={{ marginBottom: 8 }}>Tags</h3>
-          {candidate.tags?.length ? (
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {candidate.tags.map((t) => (
-                <span
-                  key={t}
-                  style={{
-                    border: "1px solid #333",
-                    padding: "4px 8px",
-                    borderRadius: 999,
-                    fontSize: 12,
-                    opacity: 0.9,
-                  }}
-                >
-                  {t}
-                </span>
-              ))}
+        {/* Glavni Sadržaj - Grid */}
+        <div className="details-grid">
+          <section className="info-section">
+            <h3 className="section-title">Contact & Links</h3>
+            <div className="links-grid">
+              <div className="link-item">
+                <label>Email</label>
+                <span>{candidate.email ?? "N/A"}</span>
+              </div>
+              <div className="link-item">
+                <label>LinkedIn</label>
+                {candidate.linkedinUrl ? <a href={candidate.linkedinUrl} target="_blank" rel="noreferrer">View Profile</a> : <span>N/A</span>}
+              </div>
+              <div className="link-item">
+                <label>GitHub</label>
+                {candidate.githubUrl ? <a href={candidate.githubUrl} target="_blank" rel="noreferrer">Open Repo</a> : <span>N/A</span>}
+              </div>
             </div>
-          ) : (
-            <p style={{ opacity: 0.7 }}>No tags</p>
-          )}
-        </div>
 
-        <div style={{ marginTop: 16 }}>
-          <h3 style={{ marginBottom: 8 }}>Add note</h3>
+            <h3 className="section-title">Tags</h3>
+            <div className="tags-container">
+              {candidate.tags?.length ? (
+                candidate.tags.map((t) => <span key={t} className="tag-pill">{t}</span>)
+              ) : (
+                <p className="empty-text">No tags assigned</p>
+              )}
+            </div>
+          </section>
 
-          <textarea
-            value={noteText}
-            onChange={(e) => setNoteText(e.target.value)}
-            rows={3}
-            style={{ width: "100%", resize: "vertical" }}
-            placeholder="Write a note..."
-          />
+          <section className="timeline-section">
+            <h3 className="section-title">Timeline & Activity</h3>
+            
+            <div className="note-input-container">
+              <textarea
+                className="note-textarea"
+                value={noteText}
+                onChange={(e) => setNoteText(e.target.value)}
+                rows={2}
+                placeholder="Add internal feedback or interview notes..."
+              />
+              <button className="btn-add-note" onClick={handleAddNote}>
+                Post Note
+              </button>
+            </div>
 
-          <button type="button" onClick={handleAddNote} style={{ marginTop: 8 }}>
-            Add note
-          </button>
-        </div>
-
-        <div style={{ marginTop: 16 }}>
-          <h3 style={{ marginBottom: 8 }}>Timeline</h3>
-
-          {events.length === 0 ? (
-            <p style={{ opacity: 0.7 }}>No events yet</p>
-          ) : (
-            <ul style={{ paddingLeft: 18 }}>
-              {events.map((e) => (
-                <li key={e.id} style={{ marginBottom: 10 }}>
-                  <div style={{ fontSize: 12, opacity: 0.7 }}>
-                    {e.type} · {formatIso(e.createdAt)}
+            <div className="timeline-list">
+              {events.length === 0 ? (
+                <p className="empty-text">No history found</p>
+              ) : (
+                events.map((e) => (
+                  <div key={e.id} className="timeline-item">
+                    <div className="timeline-dot"></div>
+                    <div className="event-meta">
+                      <span className="event-type">{e.type.replace('_', ' ')}</span>
+                      <span className="event-date">{formatIso(e.createdAt)}</span>
+                    </div>
+                    <div className="event-content">{formatEventText(e)}</div>
                   </div>
-                  <div>{formatEventText(e)}</div>
-                </li>
-              ))}
-            </ul>
-          )}
+                ))
+              )}
+            </div>
+          </section>
         </div>
       </div>
     </div>

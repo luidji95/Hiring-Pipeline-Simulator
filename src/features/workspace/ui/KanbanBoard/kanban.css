@@ -1,0 +1,19 @@
+.kanban-board {
+  display: flex;
+  gap: 1.5rem;
+  padding: 2rem;
+  align-items: flex-start;
+  overflow-x: auto; /* Omogućava scroll ako ima puno kolona */
+  background-color: #f8f9fa;
+  min-height: calc(100vh - 100px);
+  scrollbar-width: thin;
+}
+
+/* Lepši scrollbar za modernije browsere */
+.kanban-board::-webkit-scrollbar {
+  height: 8px;
+}
+.kanban-board::-webkit-scrollbar-thumb {
+  background: #cfd4da;
+  border-radius: 10px;
+}

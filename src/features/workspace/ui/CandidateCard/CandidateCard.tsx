@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { Candidate, Stage } from "../../workspace.types";
 import { CandidateMoveForm } from "./CandidateMoveForm";
+import "../CandidateCard/candidateCard.css";
 
 type Props = {
   candidate: Candidate;
@@ -15,37 +16,25 @@ export const CandidateCard = ({ candidate, onOpen, workspaceId, stages, onChange
   const [isMoving, setIsMoving] = useState(false);
 
   return (
-    <div
-      style={{
-        border: "1px solid #333",
-        marginTop: 8,
-        padding: 10,
-        borderRadius: 6,
-      }}
-    >
+    <div className="candidate-card">
       <button
         type="button"
+        className="candidate-card__info-btn"
         onClick={() => onOpen(candidate.id)}
-        style={{
-          display: "block",
-          width: "100%",
-          textAlign: "left",
-          background: "transparent",
-          color: "inherit",
-          border: "none",
-          padding: 0,
-          cursor: "pointer",
-        }}
       >
-        <div>
+        <div className="candidate-card__name">
           {candidate.firstName} {candidate.lastName}
         </div>
-        <div style={{ opacity: 0.7, fontSize: 12 }}>{candidate.title}</div>
+        <div className="candidate-card__title">{candidate.title}</div>
       </button>
 
-      <div style={{ marginTop: 10 }}>
+      <div className="candidate-card__footer">
         {!isMoving ? (
-          <button type="button" onClick={() => setIsMoving(true)}>
+          <button 
+            type="button" 
+            className="btn-move-trigger"
+            onClick={() => setIsMoving(true)}
+          >
             Move
           </button>
         ) : (

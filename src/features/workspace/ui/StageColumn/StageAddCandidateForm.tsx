@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { StageId } from "../../workspace.types";
 import { addCandidate } from "../../../storage/hpsStorage";
+import "../StageColumn/stages.css";
 
 type Props = {
   workspaceId: string;
@@ -18,13 +19,12 @@ export const StageAddCandidateForm = ({ workspaceId, stageId, onSuccess, onCance
   const handleSubmit = () => {
     try {
       setError(null);
-
       const fn = firstName.trim();
       const ln = lastName.trim();
       const t = title.trim();
 
       if (!fn || !ln || !t) {
-        setError("First name, last name and title are required.");
+        setError("All fields are required.");
         return;
       }
 
@@ -45,42 +45,36 @@ export const StageAddCandidateForm = ({ workspaceId, stageId, onSuccess, onCance
   };
 
   return (
-    <div style={{ border: "1px solid #333", padding: 10, borderRadius: 6 }}>
+    <div className="add-candidate-form">
       <input
+        className="form-input"
         value={firstName}
         onChange={(e) => setFirstName(e.target.value)}
         placeholder="First name"
-        style={{ width: "100%", marginBottom: 8 }}
       />
       <input
+        className="form-input"
         value={lastName}
         onChange={(e) => setLastName(e.target.value)}
         placeholder="Last name"
-        style={{ width: "100%", marginBottom: 8 }}
       />
       <input
+        className="form-input"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Title (e.g. Frontend Dev)"
-        style={{ width: "100%", marginBottom: 8 }}
       />
 
-      <div style={{ display: "flex", gap: 8 }}>
-        <button type="button" onClick={handleSubmit} style={{ flex: 1 }}>
+      <div className="form-actions">
+        <button type="button" className="btn-submit" onClick={handleSubmit}>
           Add
         </button>
-        <button
-          type="button"
-          onClick={() => {
-            setError(null);
-            onCancel();
-          }}
-        >
+        <button type="button" className="btn-cancel" onClick={onCancel}>
           Cancel
         </button>
       </div>
 
-      {error ? <div style={{ marginTop: 8, fontSize: 12, opacity: 0.85 }}>{error}</div> : null}
+      {error && <div className="form-error">{error}</div>}
     </div>
   );
 };
