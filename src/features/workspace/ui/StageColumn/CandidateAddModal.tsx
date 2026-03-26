@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { StageId } from "../../workspace.types";
@@ -8,8 +8,8 @@ import {
   CandidateAutoFillSchema,
   type CandidateManualEntryFormData,
   type CandidateAutoFillFormData,
-} from "../../../schemas/candidate.validation";
-import "./candidate-add-modal.css";
+}  from "../../../../schemas/candidate.validation";
+// import "./candidate-add-modal.css";
 
 type Props = {
   workspaceId: string;
