@@ -20,7 +20,7 @@ type Params = {
 const formatIso = (iso: string) => {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleString("sr-RS", { // Možeš ostaviti en-US ako preferiraš
+  return d.toLocaleString("sr-RS", { 
     month: "short",
     day: "2-digit",
     year: "numeric",

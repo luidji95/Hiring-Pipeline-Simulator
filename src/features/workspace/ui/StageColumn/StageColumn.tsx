@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useRef } from "react";
 import { CandidateCard } from "../CandidateCard/CandidateCard";
-import { StageAddCandidateForm } from "./StageAddCandidateForm";
+import { CandidateAddModal } from "./CandidateAddModal";
 import type { Candidate, Stage } from "../../workspace.types";
 import "../StageColumn/stages.css";
 
@@ -23,10 +23,18 @@ export const StageColumn = ({
   stages,
   onChange,
 }: Props) => {
-  const [isAdding, setIsAdding] = useState(false);
-  
+  const modalRef = useRef<HTMLDialogElement>(null);
+
   // Dozvoljavamo dodavanje samo u početnu fazu (screening)
   const canAddHere = stage.id === "screening";
+
+  const handleOpenModal = () => {
+    modalRef.current?.showModal();
+  };
+
+  const handleCloseModal = () => {
+    modalRef.current?.close();
+  };
 
   return (
     <div className="stage-column">
@@ -34,31 +42,19 @@ export const StageColumn = ({
         <h3 className="stage-column__title">
           {stage.label} <span className="stage-column__count">({candidateIds.length})</span>
         </h3>
-        
+
         {canAddHere && (
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="btn-add-candidate"
-            onClick={() => setIsAdding(!isAdding)}
+            onClick={handleOpenModal}
           >
-            {isAdding ? "Cancel" : "+ Add"}
+            + Add
           </button>
         )}
       </div>
 
       <div className="stage-column__content">
-        {canAddHere && isAdding && (
-          <StageAddCandidateForm
-            workspaceId={workspaceId}
-            stageId={stage.id}
-            onSuccess={() => {
-              onChange();
-              setIsAdding(false);
-            }}
-            onCancel={() => setIsAdding(false)}
-          />
-        )}
-
         <div className="stage__list">
           {candidateIds.length === 0 ? (
             <p className="no-candidates">No candidates</p>
@@ -81,6 +77,18 @@ export const StageColumn = ({
           )}
         </div>
       </div>
+
+      {/* Modal */}
+      <CandidateAddModal
+        ref={modalRef}
+        workspaceId={workspaceId}
+        stageId={stage.id}
+        onSuccess={() => {
+          onChange();
+          handleCloseModal();
+        }}
+        onCancel={handleCloseModal}
+      />
     </div>
   );
 };
