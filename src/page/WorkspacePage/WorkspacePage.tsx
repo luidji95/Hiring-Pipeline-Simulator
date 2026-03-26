@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import type { WorkspaceInstance } from "../../features/workspace/workspace.types";
 import { getInstance } from "../../features/storage/hpsStorage";
 import { KanbanBoard } from "../../features/workspace/ui/KanbanBoard/KanbanBoard";
