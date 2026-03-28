@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
+import { Button } from "../../../../ui-components";
 import "../WorkspaceHeader/workspaceHeader.css";
 
 type Props = {
   name: string;
   isDemo?: boolean;
+  onAddCandidate: () => void;
 };
 
-export const WorkspaceHeader = ({ name, isDemo }: Props) => {
+export const WorkspaceHeader = ({ name, isDemo, onAddCandidate }: Props) => {
   return (
     <div className="workspaceHeader">
       <div className="workspaceHeader__left">
@@ -28,9 +30,13 @@ export const WorkspaceHeader = ({ name, isDemo }: Props) => {
       </div>
 
       <div className="workspaceHeader__right">
-        <button className="workspaceHeader__addBtn">
+        <Button
+          type="button"
+          className="workspaceHeader__addBtn"
+          onClick={onAddCandidate}
+        >
           + Add Candidate
-        </button>
+        </Button>
       </div>
     </div>
   );

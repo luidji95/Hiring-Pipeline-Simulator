@@ -1,6 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
 import type { StageId } from "../../workspace.types";
 import { addCandidate } from "../../../storage/hpsStorage";
 import {
@@ -8,7 +9,8 @@ import {
   CandidateAutoFillSchema,
   type CandidateManualEntryFormData,
   type CandidateAutoFillFormData,
-}  from "../../../../schemas/candidate.validation";
+} from "../../../../schemas/candidate.validation";
+import { Button, Input } from "../../../../ui-components";
 // import "./candidate-add-modal.css";
 
 type Props = {
@@ -24,17 +26,39 @@ export const CandidateAddModal = React.forwardRef<HTMLDialogElement, Props>(
   ({ workspaceId, stageId, onSuccess, onCancel }, ref) => {
     const [activeTab, setActiveTab] = React.useState<TabType>("manual");
 
-    // Manual Entry Form
     const manualForm = useForm<CandidateManualEntryFormData>({
       resolver: zodResolver(CandidateManualEntrySchema),
       mode: "onBlur",
+      defaultValues: {
+        firstName: "",
+        lastName: "",
+        title: "",
+        email: "",
+        linkedinUrl: "",
+        githubUrl: "",
+        location: "",
+      },
     });
 
-    // Auto-fill Form
     const autoFillForm = useForm<CandidateAutoFillFormData>({
       resolver: zodResolver(CandidateAutoFillSchema),
       mode: "onBlur",
+      defaultValues: {
+        profileUrl: "",
+      },
     });
+
+    const handleTabChange = (tab: TabType) => {
+      setActiveTab(tab);
+      manualForm.clearErrors();
+      autoFillForm.clearErrors();
+    };
+
+    const handleCancel = () => {
+      manualForm.reset();
+      autoFillForm.reset();
+      onCancel();
+    };
 
     const onManualSubmit = (data: CandidateManualEntryFormData) => {
       try {
@@ -48,234 +72,202 @@ export const CandidateAddModal = React.forwardRef<HTMLDialogElement, Props>(
           location: data.location || undefined,
           stageId,
         });
+
+        manualForm.reset();
+        autoFillForm.reset();
         onSuccess();
-        if (ref && "current" in ref) {
-          ref.current?.close();
-        }
-      } catch (e) {
-        console.error("Failed to add candidate:", e);
+      } catch (error) {
+        console.error("Failed to add candidate:", error);
       }
     };
 
     const onAutoFillSubmit = (data: CandidateAutoFillFormData) => {
-      // Placeholder - implementacija će doći kasnije
       console.log("Auto-fill URL:", data.profileUrl);
-      alert("Auto-fill feature coming soon! URL: " + data.profileUrl);
-    };
 
-    const handleCancel = () => {
-      onCancel();
-      if (ref && "current" in ref) {
-        ref.current?.close();
-      }
+      // TODO:
+      // Ovde kasnije ide AI parsing flow:
+      // 1. pošaljem URL na backend / edge function
+      // 2. backend vrati strukturisane podatke
+      // 3. manualForm.reset(...) popuni polja
+      // 4. prebacim korisnika na manual tab da potvrdi podatke
+
+      autoFillForm.reset({
+        profileUrl: data.profileUrl,
+      });
     };
 
     return (
       <dialog ref={ref} className="candidate-add-modal">
         <div className="modal-overlay">
           <div className="modal-content">
-            {/* Header */}
             <div className="modal-header">
               <h2>Add New Candidate</h2>
-              <button
+
+              <Button
                 type="button"
                 className="modal-close-btn"
                 onClick={handleCancel}
                 aria-label="Close modal"
               >
                 ✕
-              </button>
+              </Button>
             </div>
 
-            {/* Tab Navigation */}
             <div className="modal-tabs">
-              <button
+              <Button
                 type="button"
                 className={`tab-button ${activeTab === "manual" ? "active" : ""}`}
-                onClick={() => setActiveTab("manual")}
+                onClick={() => handleTabChange("manual")}
               >
                 Manual Entry
-              </button>
-              <button
+              </Button>
+
+              <Button
                 type="button"
                 className={`tab-button ${activeTab === "autofill" ? "active" : ""}`}
-                onClick={() => setActiveTab("autofill")}
+                onClick={() => handleTabChange("autofill")}
               >
                 Auto-fill from Profile URL
-              </button>
+              </Button>
             </div>
 
-            {/* Tab Content */}
             <div className="modal-body">
-              {/* Manual Entry Tab */}
               {activeTab === "manual" && (
                 <form
                   onSubmit={manualForm.handleSubmit(onManualSubmit)}
                   className="form-group"
                 >
                   <div className="form-row">
-                    <div className="form-field">
-                      <label htmlFor="firstName">First Name *</label>
-                      <input
-                        id="firstName"
-                        type="text"
-                        placeholder="John"
-                        {...manualForm.register("firstName")}
-                        className="form-input"
-                      />
-                      {manualForm.formState.errors.firstName && (
-                        <span className="form-error">
-                          {manualForm.formState.errors.firstName.message}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="form-field">
-                      <label htmlFor="lastName">Last Name *</label>
-                      <input
-                        id="lastName"
-                        type="text"
-                        placeholder="Doe"
-                        {...manualForm.register("lastName")}
-                        className="form-input"
-                      />
-                      {manualForm.formState.errors.lastName && (
-                        <span className="form-error">
-                          {manualForm.formState.errors.lastName.message}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="form-field">
-                    <label htmlFor="title">Position/Title *</label>
-                    <input
-                      id="title"
+                    <Input
+                      label="First Name *"
                       type="text"
-                      placeholder="e.g., Frontend Developer"
-                      {...manualForm.register("title")}
-                      className="form-input"
+                      placeholder="John"
+                      registration={manualForm.register("firstName")}
+                      error={manualForm.formState.errors.firstName?.message}
+                      wrapperClassName="form-field"
+                      inputClassName="form-input"
                     />
-                    {manualForm.formState.errors.title && (
-                      <span className="form-error">
-                        {manualForm.formState.errors.title.message}
-                      </span>
-                    )}
+
+                    <Input
+                      label="Last Name *"
+                      type="text"
+                      placeholder="Doe"
+                      registration={manualForm.register("lastName")}
+                      error={manualForm.formState.errors.lastName?.message}
+                      wrapperClassName="form-field"
+                      inputClassName="form-input"
+                    />
                   </div>
 
-                  <div className="form-field">
-                    <label htmlFor="email">Email</label>
-                    <input
-                      id="email"
-                      type="email"
-                      placeholder="john@example.com"
-                      {...manualForm.register("email")}
-                      className="form-input"
-                    />
-                    {manualForm.formState.errors.email && (
-                      <span className="form-error">
-                        {manualForm.formState.errors.email.message}
-                      </span>
-                    )}
-                  </div>
+                  <Input
+                    label="Position/Title *"
+                    type="text"
+                    placeholder="e.g., Frontend Developer"
+                    registration={manualForm.register("title")}
+                    error={manualForm.formState.errors.title?.message}
+                    wrapperClassName="form-field"
+                    inputClassName="form-input"
+                  />
+
+                  <Input
+                    label="Email"
+                    type="email"
+                    placeholder="john@example.com"
+                    registration={manualForm.register("email")}
+                    error={manualForm.formState.errors.email?.message}
+                    wrapperClassName="form-field"
+                    inputClassName="form-input"
+                  />
 
                   <div className="form-row">
-                    <div className="form-field">
-                      <label htmlFor="linkedinUrl">LinkedIn Profile</label>
-                      <input
-                        id="linkedinUrl"
-                        type="url"
-                        placeholder="https://linkedin.com/in/johndoe"
-                        {...manualForm.register("linkedinUrl")}
-                        className="form-input"
-                      />
-                      {manualForm.formState.errors.linkedinUrl && (
-                        <span className="form-error">
-                          {manualForm.formState.errors.linkedinUrl.message}
-                        </span>
-                      )}
-                    </div>
+                    <Input
+                      label="LinkedIn Profile"
+                      type="url"
+                      placeholder="https://linkedin.com/in/johndoe"
+                      registration={manualForm.register("linkedinUrl")}
+                      error={manualForm.formState.errors.linkedinUrl?.message}
+                      wrapperClassName="form-field"
+                      inputClassName="form-input"
+                    />
 
-                    <div className="form-field">
-                      <label htmlFor="githubUrl">GitHub Profile</label>
-                      <input
-                        id="githubUrl"
-                        type="url"
-                        placeholder="https://github.com/johndoe"
-                        {...manualForm.register("githubUrl")}
-                        className="form-input"
-                      />
-                      {manualForm.formState.errors.githubUrl && (
-                        <span className="form-error">
-                          {manualForm.formState.errors.githubUrl.message}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="form-field">
-                    <label htmlFor="location">Location</label>
-                    <input
-                      id="location"
-                      type="text"
-                      placeholder="e.g., Belgrade, Serbia"
-                      {...manualForm.register("location")}
-                      className="form-input"
+                    <Input
+                      label="GitHub Profile"
+                      type="url"
+                      placeholder="https://github.com/johndoe"
+                      registration={manualForm.register("githubUrl")}
+                      error={manualForm.formState.errors.githubUrl?.message}
+                      wrapperClassName="form-field"
+                      inputClassName="form-input"
                     />
                   </div>
 
+                  <Input
+                    label="Location"
+                    type="text"
+                    placeholder="e.g., Belgrade, Serbia"
+                    registration={manualForm.register("location")}
+                    error={manualForm.formState.errors.location?.message}
+                    wrapperClassName="form-field"
+                    inputClassName="form-input"
+                  />
+
                   <div className="modal-actions">
-                    <button type="submit" className="btn-submit">
+                    <Button
+                      type="submit"
+                      className="btn-submit"
+                      isLoading={manualForm.formState.isSubmitting}
+                    >
                       Add Candidate
-                    </button>
-                    <button
+                    </Button>
+
+                    <Button
                       type="button"
                       className="btn-cancel"
                       onClick={handleCancel}
                     >
                       Cancel
-                    </button>
+                    </Button>
                   </div>
                 </form>
               )}
 
-              {/* Auto-fill Tab */}
               {activeTab === "autofill" && (
                 <form
                   onSubmit={autoFillForm.handleSubmit(onAutoFillSubmit)}
                   className="form-group"
                 >
-                  <div className="form-field">
-                    <label htmlFor="profileUrl">Profile URL *</label>
-                    <input
-                      id="profileUrl"
-                      type="url"
-                      placeholder="https://linkedin.com/in/johndoe"
-                      {...autoFillForm.register("profileUrl")}
-                      className="form-input"
-                    />
-                    {autoFillForm.formState.errors.profileUrl && (
-                      <span className="form-error">
-                        {autoFillForm.formState.errors.profileUrl.message}
-                      </span>
-                    )}
-                  </div>
+                  <Input
+                    label="Profile URL *"
+                    type="url"
+                    placeholder="https://linkedin.com/in/johndoe"
+                    registration={autoFillForm.register("profileUrl")}
+                    error={autoFillForm.formState.errors.profileUrl?.message}
+                    helperText="Paste a public profile URL. AI parsing flow can be added later."
+                    wrapperClassName="form-field"
+                    inputClassName="form-input"
+                  />
 
                   <p className="autofill-info">
-                    We'll automatically extract candidate information from their profile.
+                    We’ll try to extract candidate information automatically. If parsing
+                    fails, you can always switch to manual entry.
                   </p>
 
                   <div className="modal-actions">
-                    <button type="submit" className="btn-submit">
+                    <Button
+                      type="submit"
+                      className="btn-submit"
+                      isLoading={autoFillForm.formState.isSubmitting}
+                    >
                       Parse Profile
-                    </button>
-                    <button
+                    </Button>
+
+                    <Button
                       type="button"
                       className="btn-cancel"
                       onClick={handleCancel}
                     >
                       Cancel
-                    </button>
+                    </Button>
                   </div>
                 </form>
               )}

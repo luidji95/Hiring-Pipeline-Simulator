@@ -7,6 +7,8 @@ import type { WorkspaceIndexItem } from "../../features/workspace/workspace.type
 
 import { createCustomInstance,createInstanceFromTemplate,getInstancesIndex,clearAllHpsData,clearDemoInstances } from "../../features/storage/hpsStorage";
 
+import { Button, Input } from "../../ui-components";
+
 const formatDate = (iso: string) => {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "";
@@ -65,23 +67,21 @@ export const LandingPage = () => {
 
         <div className="landing__actions">
           <div className="workspace-create">
-            <input
-              type="text"
-              placeholder="Create new pipeline (e.g. Frontend Hiring)"
+            <Input
+              wrapperClassName="workspace-create__input"
+              inputClassName=""
+              placeholder="Enter workspace name"
               value={workspaceName}
               onChange={(e) => setWorkspaceName(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") handleCreateWorkspace();
-              }}
             />
-            <button className="btn btn--secondary" onClick={handleCreateWorkspace}>
+            <Button type="submit" className="landing__primaryBtn" onClick={handleCreateWorkspace}>
               Create
-            </button>
+            </Button>
           </div>
 
           {isDev && (
             <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
-              <button
+              <Button
                 className="btn btn--secondary"
                 onClick={() => {
                   clearDemoInstances();
@@ -89,9 +89,9 @@ export const LandingPage = () => {
                 }}
               >
                 Reset demo instances
-              </button>
+              </Button>
 
-              <button
+              <Button
                 className="btn btn--secondary"
                 onClick={() => {
                   clearAllHpsData();
@@ -99,7 +99,7 @@ export const LandingPage = () => {
                 }}
               >
                 Reset ALL local data
-              </button>
+              </Button>
             </div>
           )}
         </div>
@@ -109,7 +109,7 @@ export const LandingPage = () => {
 
           <div className="workspace-grid">
             {WORKSPACE_TEMPLATES.map((tpl) => (
-              <button
+              <Button
                 key={tpl.id}
                 className="workspace-tile"
                 type="button"
@@ -132,7 +132,7 @@ export const LandingPage = () => {
 
                 <div className="workspace-tile__title">{tpl.name}</div>
                 <div className="workspace-tile__meta">Seeded candidates: {tpl.seedCandidates.length}</div>
-              </button>
+              </Button>
             ))}
           </div>
         </div>

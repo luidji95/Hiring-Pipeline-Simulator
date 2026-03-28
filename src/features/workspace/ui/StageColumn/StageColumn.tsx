@@ -1,6 +1,4 @@
-import { useRef } from "react";
 import { CandidateCard } from "../CandidateCard/CandidateCard";
-import { CandidateAddModal } from "./CandidateAddModal";
 import type { Candidate, Stage } from "../../workspace.types";
 import "../StageColumn/stages.css";
 
@@ -23,35 +21,13 @@ export const StageColumn = ({
   stages,
   onChange,
 }: Props) => {
-  const modalRef = useRef<HTMLDialogElement>(null);
-
-  // Dozvoljavamo dodavanje samo u početnu fazu (screening)
-  const canAddHere = stage.id === "screening";
-
-  const handleOpenModal = () => {
-    modalRef.current?.showModal();
-  };
-
-  const handleCloseModal = () => {
-    modalRef.current?.close();
-  };
-
   return (
     <div className="stage-column">
       <div className="stage-column__header">
         <h3 className="stage-column__title">
-          {stage.label} <span className="stage-column__count">({candidateIds.length})</span>
+          {stage.label}{" "}
+          <span className="stage-column__count">({candidateIds.length})</span>
         </h3>
-
-        {canAddHere && (
-          <button
-            type="button"
-            className="btn-add-candidate"
-            onClick={handleOpenModal}
-          >
-            + Add
-          </button>
-        )}
       </div>
 
       <div className="stage-column__content">
@@ -60,13 +36,13 @@ export const StageColumn = ({
             <p className="no-candidates">No candidates</p>
           ) : (
             candidateIds.map((id) => {
-              const c = candidatesById[id];
-              if (!c) return null;
+              const candidate = candidatesById[id];
+              if (!candidate) return null;
 
               return (
                 <CandidateCard
                   key={id}
-                  candidate={c}
+                  candidate={candidate}
                   onOpen={onOpenCandidate}
                   workspaceId={workspaceId}
                   stages={stages}
@@ -77,18 +53,6 @@ export const StageColumn = ({
           )}
         </div>
       </div>
-
-      {/* Modal */}
-      <CandidateAddModal
-        ref={modalRef}
-        workspaceId={workspaceId}
-        stageId={stage.id}
-        onSuccess={() => {
-          onChange();
-          handleCloseModal();
-        }}
-        onCancel={handleCloseModal}
-      />
     </div>
   );
 };
