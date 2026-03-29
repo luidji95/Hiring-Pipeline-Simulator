@@ -8,6 +8,19 @@ import type {
 } from "../workspace/workspace.types";
 import { WORKSPACE_TEMPLATES } from "../workspace/workspaceTemplates";
 
+export type UpdateCandidateInput = {
+  firstName: string;
+  lastName: string;
+  title: string;
+  company?: string;
+  location?: string;
+  email?: string;
+  linkedinUrl?: string;
+  githubUrl?: string;
+  portfolioUrl?: string;
+  tags?: string[];
+};
+
 const INDEX_KEY = "hps_instances_index";
 const instanceKey = (id: string) => `hps_instance_${id}`;
 
@@ -393,7 +406,7 @@ export const toggleStar = (
     id: uuid(),
     type: candidate.isStarred ? "starred" : "unstarred",
     createdAt: nowIso(),
-    payload: {message},
+    payload: {},
   };
 
   instance.candidatesById[candidateId] = candidate;
@@ -405,5 +418,48 @@ export const toggleStar = (
 
   saveInstance(instance);
 
+  return instance;
+};
+
+export const updateCandidate = (
+  instanceId: string,
+  candidateId: string,
+  input: UpdateCandidateInput
+): WorkspaceInstance => {
+  const instance = getInstance(instanceId);
+  if (!instance) throw new Error("Workspace instance not found.");
+
+  const candidate = instance.candidatesById[candidateId];
+  if (!candidate) throw new Error("Candidate not found.");
+
+  const updatedCandidate: Candidate = {
+    ...candidate,
+    firstName: input.firstName.trim(),
+    lastName: input.lastName.trim(),
+    title: input.title.trim(),
+    company: input.company?.trim() || undefined,
+    location: input.location?.trim() || undefined,
+    email: input.email?.trim() || undefined,
+    linkedinUrl: input.linkedinUrl?.trim() || undefined,
+    githubUrl: input.githubUrl?.trim() || undefined,
+    portfolioUrl: input.portfolioUrl?.trim() || undefined,
+    tags: input.tags?.filter(Boolean).map((t) => t.trim()) || candidate.tags,
+  };
+
+  instance.candidatesById[candidateId] = updatedCandidate;
+
+  const event: CandidateEvent = {
+    id: uuid(),
+    type: "updated",
+    createdAt: nowIso(),
+    payload: {},
+  };
+
+  instance.eventsByCandidateId[candidateId] = [
+    ...(instance.eventsByCandidateId[candidateId] ?? []),
+    event,
+  ];
+
+  saveInstance(instance);
   return instance;
 };

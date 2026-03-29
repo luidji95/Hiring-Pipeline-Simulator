@@ -1,20 +1,23 @@
 import { useNavigate } from "react-router-dom";
-import type { WorkspaceInstance } from "../../workspace.types";
+import type { WorkspaceInstance, Candidate } from "../../workspace.types";
 import { StageColumn } from "../StageColumn/StageColumn";
 import "../KanbanBoard/kanban.css";
+
+type Props = {
+  instance: WorkspaceInstance;
+  workspaceId: string;
+  onChange: () => void;
+  onEditCandidate: (candidate: Candidate) => void;
+};
 
 export const KanbanBoard = ({
   instance,
   workspaceId,
   onChange,
-}: {
-  instance: WorkspaceInstance;
-  workspaceId: string;
-  onChange: () => void;
-}) => {
+  onEditCandidate,
+}: Props) => {
   const navigate = useNavigate();
 
-  // Filtriramo faze koje želimo da prikažemo u Kanbanu
   const visibleStages = instance.stages.filter(
     (s) => !["new", "hired", "rejected"].includes(s.id)
   );
@@ -35,6 +38,7 @@ export const KanbanBoard = ({
           workspaceId={workspaceId}
           stages={instance.stages}
           onChange={onChange}
+          onEditCandidate={onEditCandidate}
         />
       ))}
     </div>

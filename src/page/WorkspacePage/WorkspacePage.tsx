@@ -1,11 +1,15 @@
 import { useEffect, useCallback, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import type { WorkspaceInstance } from "../../features/workspace/workspace.types";
+import type {
+  WorkspaceInstance,
+  Candidate,
+} from "../../features/workspace/workspace.types";
 import { getInstance } from "../../features/storage/hpsStorage";
 import { KanbanBoard } from "../../features/workspace/ui/KanbanBoard/KanbanBoard";
 import { Topbar } from "../../features/workspace/ui/Topbar/Topbar";
 import { WorkspaceHeader } from "../../features/workspace/ui/WorkspaceHeader/WorkSpaceHeader";
-import { CandidateAddModal } from "../../features/workspace/ui/StageColumn/CandidateAddModal";
+import { CandidateFormModal } from "../../features/workspace/ui/StageColumn/CandidateFormModal";
+import type { CandidateManualEntryFormData } from "../../schemas/candidate.validation";
 import "../WorkspacePage/workspacepage.css";
 
 export const WorkspacePage = () => {
@@ -13,7 +17,10 @@ export const WorkspacePage = () => {
   const navigate = useNavigate();
 
   const [instance, setInstance] = useState<WorkspaceInstance | null>(null);
-  const candidateModalRef = useRef<HTMLDialogElement>(null);
+  const [editingCandidate, setEditingCandidate] = useState<Candidate | null>(null);
+
+  const createCandidateModalRef = useRef<HTMLDialogElement>(null);
+  const editCandidateModalRef = useRef<HTMLDialogElement>(null);
 
   const reload = useCallback(() => {
     if (!id) return;
@@ -31,12 +38,38 @@ export const WorkspacePage = () => {
     reload();
   }, [reload]);
 
-  const handleOpenCandidateModal = () => {
-    candidateModalRef.current?.showModal();
+  const handleOpenCreateCandidateModal = () => {
+    createCandidateModalRef.current?.showModal();
   };
 
-  const handleCloseCandidateModal = () => {
-    candidateModalRef.current?.close();
+  const handleCloseCreateCandidateModal = () => {
+    createCandidateModalRef.current?.close();
+  };
+
+  const handleOpenEditCandidateModal = (candidate: Candidate) => {
+    setEditingCandidate(candidate);
+    editCandidateModalRef.current?.showModal();
+  };
+
+  const handleCloseEditCandidateModal = () => {
+    editCandidateModalRef.current?.close();
+    setEditingCandidate(null);
+  };
+
+  const getEditInitialValues = (
+    candidate: Candidate | null
+  ): Partial<CandidateManualEntryFormData> | undefined => {
+    if (!candidate) return undefined;
+
+    return {
+      firstName: candidate.firstName,
+      lastName: candidate.lastName,
+      title: candidate.title,
+      email: candidate.email ?? "",
+      linkedinUrl: candidate.linkedinUrl ?? "",
+      githubUrl: candidate.githubUrl ?? "",
+      location: candidate.location ?? "",
+    };
   };
 
   if (!instance) return null;
@@ -48,7 +81,7 @@ export const WorkspacePage = () => {
       <WorkspaceHeader
         name={instance.name}
         isDemo={!!instance.sourceTemplateId}
-        onAddCandidate={handleOpenCandidateModal}
+        onAddCandidate={handleOpenCreateCandidateModal}
       />
 
       <div className="workspacePage__content">
@@ -56,18 +89,36 @@ export const WorkspacePage = () => {
           instance={instance}
           workspaceId={instance.id}
           onChange={reload}
+          onEditCandidate={handleOpenEditCandidateModal}
         />
       </div>
 
-      <CandidateAddModal
-        ref={candidateModalRef}
+      <CandidateFormModal
+        ref={createCandidateModalRef}
         workspaceId={instance.id}
         stageId="screening"
+        mode="create"
+        initialValues={undefined}
+        candidateId={undefined}
         onSuccess={() => {
           reload();
-          handleCloseCandidateModal();
+          handleCloseCreateCandidateModal();
         }}
-        onCancel={handleCloseCandidateModal}
+        onCancel={handleCloseCreateCandidateModal}
+      />
+
+      <CandidateFormModal
+        ref={editCandidateModalRef}
+        workspaceId={instance.id}
+        stageId={editingCandidate?.stageId ?? "screening"}
+        mode="edit"
+        candidateId={editingCandidate?.id}
+        initialValues={getEditInitialValues(editingCandidate)}
+        onSuccess={() => {
+          reload();
+          handleCloseEditCandidateModal();
+        }}
+        onCancel={handleCloseEditCandidateModal}
       />
     </div>
   );

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import type { StageId } from "../../workspace.types";
-import { addCandidate } from "../../../storage/hpsStorage";
+import { addCandidate, updateCandidate } from "../../../storage/hpsStorage";
 import {
   CandidateManualEntrySchema,
   CandidateAutoFillSchema,
@@ -11,33 +11,52 @@ import {
   type CandidateAutoFillFormData,
 } from "../../../../schemas/candidate.validation";
 import { Button, Input } from "../../../../ui-components";
-// import "./candidate-add-modal.css";
+
+type CandidateFormMode = "create" | "edit";
+type TabType = "manual" | "autofill";
 
 type Props = {
   workspaceId: string;
   stageId: StageId;
+  mode: CandidateFormMode;
+  candidateId?: string;
+  initialValues?: Partial<CandidateManualEntryFormData>;
   onSuccess: () => void;
   onCancel: () => void;
 };
 
-type TabType = "manual" | "autofill";
+const emptyManualValues: CandidateManualEntryFormData = {
+  firstName: "",
+  lastName: "",
+  title: "",
+  email: "",
+  linkedinUrl: "",
+  githubUrl: "",
+  location: "",
+};
 
-export const CandidateAddModal = React.forwardRef<HTMLDialogElement, Props>(
-  ({ workspaceId, stageId, onSuccess, onCancel }, ref) => {
+export const CandidateFormModal = React.forwardRef<HTMLDialogElement, Props>(
+  (
+    {
+      workspaceId,
+      stageId,
+      mode,
+      candidateId,
+      initialValues,
+      onSuccess,
+      onCancel,
+    },
+    ref
+  ) => {
     const [activeTab, setActiveTab] = React.useState<TabType>("manual");
 
     const manualForm = useForm<CandidateManualEntryFormData>({
       resolver: zodResolver(CandidateManualEntrySchema),
       mode: "onBlur",
-      defaultValues: {
-        firstName: "",
-        lastName: "",
-        title: "",
-        email: "",
-        linkedinUrl: "",
-        githubUrl: "",
-        location: "",
-      },
+      defaultValues:
+        mode === "edit"
+          ? { ...emptyManualValues, ...initialValues }
+          : emptyManualValues,
     });
 
     const autoFillForm = useForm<CandidateAutoFillFormData>({
@@ -48,6 +67,20 @@ export const CandidateAddModal = React.forwardRef<HTMLDialogElement, Props>(
       },
     });
 
+    React.useEffect(() => {
+      if (mode === "edit") {
+        manualForm.reset({
+          ...emptyManualValues,
+          ...initialValues,
+        });
+        setActiveTab("manual");
+      } else {
+        manualForm.reset(emptyManualValues);
+        autoFillForm.reset({ profileUrl: "" });
+        setActiveTab("manual");
+      }
+    }, [mode, initialValues, manualForm, autoFillForm]);
+
     const handleTabChange = (tab: TabType) => {
       setActiveTab(tab);
       manualForm.clearErrors();
@@ -55,29 +88,51 @@ export const CandidateAddModal = React.forwardRef<HTMLDialogElement, Props>(
     };
 
     const handleCancel = () => {
-      manualForm.reset();
-      autoFillForm.reset();
+      manualForm.reset(
+        mode === "edit"
+          ? { ...emptyManualValues, ...initialValues }
+          : emptyManualValues
+      );
+      autoFillForm.reset({ profileUrl: "" });
+      setActiveTab("manual");
       onCancel();
     };
 
     const onManualSubmit = (data: CandidateManualEntryFormData) => {
       try {
-        addCandidate(workspaceId, {
-          firstName: data.firstName,
-          lastName: data.lastName,
-          title: data.title,
-          email: data.email || undefined,
-          linkedinUrl: data.linkedinUrl || undefined,
-          githubUrl: data.githubUrl || undefined,
-          location: data.location || undefined,
-          stageId,
-        });
+        if (mode === "create") {
+          addCandidate(workspaceId, {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            title: data.title,
+            email: data.email || undefined,
+            linkedinUrl: data.linkedinUrl || undefined,
+            githubUrl: data.githubUrl || undefined,
+            location: data.location || undefined,
+            stageId,
+          });
+        } else {
+          if (!candidateId) {
+            throw new Error("Candidate ID is required in edit mode.");
+          }
 
-        manualForm.reset();
-        autoFillForm.reset();
+          updateCandidate(workspaceId, candidateId, {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            title: data.title,
+            email: data.email || undefined,
+            linkedinUrl: data.linkedinUrl || undefined,
+            githubUrl: data.githubUrl || undefined,
+            location: data.location || undefined,
+          });
+        }
+
+        manualForm.reset(emptyManualValues);
+        autoFillForm.reset({ profileUrl: "" });
+        setActiveTab("manual");
         onSuccess();
       } catch (error) {
-        console.error("Failed to add candidate:", error);
+        console.error("Failed to submit candidate form:", error);
       }
     };
 
@@ -85,23 +140,28 @@ export const CandidateAddModal = React.forwardRef<HTMLDialogElement, Props>(
       console.log("Auto-fill URL:", data.profileUrl);
 
       // TODO:
-      // Ovde kasnije ide AI parsing flow:
-      // 1. pošaljem URL na backend / edge function
-      // 2. backend vrati strukturisane podatke
+      // 1. pošalješ URL na backend / edge function
+      // 2. vratiš strukturisane podatke
       // 3. manualForm.reset(...) popuni polja
-      // 4. prebacim korisnika na manual tab da potvrdi podatke
+      // 4. prebaciš korisnika na manual tab
 
       autoFillForm.reset({
         profileUrl: data.profileUrl,
       });
     };
 
+    const titleText =
+      mode === "edit" ? "Edit Candidate" : "Add New Candidate";
+
+    const submitText =
+      mode === "edit" ? "Save Changes" : "Add Candidate";
+
     return (
       <dialog ref={ref} className="candidate-add-modal">
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>Add New Candidate</h2>
+              <h2>{titleText}</h2>
 
               <Button
                 type="button"
@@ -113,26 +173,28 @@ export const CandidateAddModal = React.forwardRef<HTMLDialogElement, Props>(
               </Button>
             </div>
 
-            <div className="modal-tabs">
-              <Button
-                type="button"
-                className={`tab-button ${activeTab === "manual" ? "active" : ""}`}
-                onClick={() => handleTabChange("manual")}
-              >
-                Manual Entry
-              </Button>
+            {mode === "create" && (
+              <div className="modal-tabs">
+                <Button
+                  type="button"
+                  className={`tab-button ${activeTab === "manual" ? "active" : ""}`}
+                  onClick={() => handleTabChange("manual")}
+                >
+                  Manual Entry
+                </Button>
 
-              <Button
-                type="button"
-                className={`tab-button ${activeTab === "autofill" ? "active" : ""}`}
-                onClick={() => handleTabChange("autofill")}
-              >
-                Auto-fill from Profile URL
-              </Button>
-            </div>
+                <Button
+                  type="button"
+                  className={`tab-button ${activeTab === "autofill" ? "active" : ""}`}
+                  onClick={() => handleTabChange("autofill")}
+                >
+                  Auto-fill from Profile URL
+                </Button>
+              </div>
+            )}
 
             <div className="modal-body">
-              {activeTab === "manual" && (
+              {(activeTab === "manual" || mode === "edit") && (
                 <form
                   onSubmit={manualForm.handleSubmit(onManualSubmit)}
                   className="form-group"
@@ -217,7 +279,7 @@ export const CandidateAddModal = React.forwardRef<HTMLDialogElement, Props>(
                       className="btn-submit"
                       isLoading={manualForm.formState.isSubmitting}
                     >
-                      Add Candidate
+                      {submitText}
                     </Button>
 
                     <Button
@@ -231,7 +293,7 @@ export const CandidateAddModal = React.forwardRef<HTMLDialogElement, Props>(
                 </form>
               )}
 
-              {activeTab === "autofill" && (
+              {activeTab === "autofill" && mode === "create" && (
                 <form
                   onSubmit={autoFillForm.handleSubmit(onAutoFillSubmit)}
                   className="form-group"
@@ -279,4 +341,4 @@ export const CandidateAddModal = React.forwardRef<HTMLDialogElement, Props>(
   }
 );
 
-CandidateAddModal.displayName = "CandidateAddModal";
+CandidateFormModal.displayName = "CandidateFormModal";

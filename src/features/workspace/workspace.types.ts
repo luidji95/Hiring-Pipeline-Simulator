@@ -70,7 +70,14 @@ export type CandidateEvent =
       type: "unstarred";
       createdAt: string;
       payload: {};
-    };
+    }
+  | {
+      id:string;
+      type: "update";
+      createdAt: string;
+      payload: {};
+    }
+
 
 export type WorkspaceInstance = {
   id: string;

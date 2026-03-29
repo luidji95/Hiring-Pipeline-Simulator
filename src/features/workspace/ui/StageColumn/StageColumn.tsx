@@ -10,6 +10,7 @@ type Props = {
   workspaceId: string;
   stages: Stage[];
   onChange: () => void;
+  onEditCandidate: (candidate: Candidate) => void;
 };
 
 export const StageColumn = ({
@@ -20,10 +21,15 @@ export const StageColumn = ({
   workspaceId,
   stages,
   onChange,
+  onEditCandidate,
 }: Props) => {
+  const starredCandidateIds = candidateIds.filter(
+    (id) => candidatesById[id]?.isStarred
+  );
 
-  const starredCandidateIds = candidateIds.filter((id) => candidatesById[id]?.isStarred);
-  const regularCandidateIds = candidateIds.filter((id) => !candidatesById[id]?.isStarred);
+  const regularCandidateIds = candidateIds.filter(
+    (id) => !candidatesById[id]?.isStarred
+  );
 
   const displayCandidateIds = [...starredCandidateIds, ...regularCandidateIds];
 
@@ -38,14 +44,12 @@ export const StageColumn = ({
 
       <div className="stage-column__content">
         <div className="stage__list">
-          {candidateIds.length === 0 ? (
+          {displayCandidateIds.length === 0 ? (
             <p className="no-candidates">No candidates</p>
           ) : (
             displayCandidateIds.map((id) => {
               const candidate = candidatesById[id];
               if (!candidate) return null;
-
-          
 
               return (
                 <CandidateCard
@@ -55,6 +59,7 @@ export const StageColumn = ({
                   workspaceId={workspaceId}
                   stages={stages}
                   onChange={onChange}
+                  onEditCandidate={onEditCandidate}
                 />
               );
             })
