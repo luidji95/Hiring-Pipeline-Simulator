@@ -11,6 +11,7 @@ import type {
   StageId,
 } from "../../features/workspace/workspace.types";
 import "../CandidatePage/candidatePage.css";
+import { Star } from "lucide-react";
 
 type Params = {
   workspaceId: string;
@@ -73,21 +74,41 @@ export const CandidateDetails = () => {
   if (loading) return <div className="details-loading">Loading candidate profile...</div>;
   if (!candidate) return null;
 
-  const formatEventText = (e: CandidateEvent) => {
-    if (e.type === "created") return "Candidate profile initialized";
-    if (e.type === "stage_moved") {
-      const from = stageLabelById?.[e.payload.fromStageId] ?? e.payload.fromStageId;
-      const to = stageLabelById?.[e.payload.toStageId] ?? e.payload.toStageId;
-      return (
-        <span>
-          Moved from <strong>{from}</strong> to <strong>{to}</strong>
-          <br />
-          <small className="event-reason">Reason: {e.payload.reason}</small>
-        </span>
-      );
-    }
-    return e.payload.content;
-  };
+const formatEventText = (e: CandidateEvent) => {
+  if (e.type === "created") return "Candidate profile initialized";
+
+  if (e.type === "stage_moved") {
+    const from = stageLabelById?.[e.payload.fromStageId] ?? e.payload.fromStageId;
+    const to = stageLabelById?.[e.payload.toStageId] ?? e.payload.toStageId;
+    return (
+      <span>
+        Moved from <strong>{from}</strong> to <strong>{to}</strong>
+        <br />
+        <small className="event-reason">Reason: {e.payload.reason}</small>
+      </span>
+    );
+  }
+
+  if (e.type === "starred") {
+    return (
+      <span className="event-star event-star--active">
+        <Star size={14} fill="gold" stroke="gold" />
+        Candidate marked as priority
+      </span>
+    );
+  }
+
+  if (e.type === "unstarred") {
+    return (
+      <span className="event-star event-star--inactive">
+        <Star size={14} fill="none" stroke="#999" />
+        Candidate removed from priority
+      </span>
+    );
+  }
+
+  return e.payload.content;
+};
 
   const handleAddNote = () => {
     const trimmed = noteText.trim();

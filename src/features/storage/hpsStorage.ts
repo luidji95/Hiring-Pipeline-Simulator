@@ -381,7 +381,6 @@ export const toggleStar = (
   instanceId: string,
   candidateId: string
 ): WorkspaceInstance => {
-  
   const instance = getInstance(instanceId);
   if (!instance) throw new Error("Workspace instance not found.");
 
@@ -390,7 +389,19 @@ export const toggleStar = (
 
   candidate.isStarred = !candidate.isStarred;
 
+  const event: CandidateEvent = {
+    id: uuid(),
+    type: candidate.isStarred ? "starred" : "unstarred",
+    createdAt: nowIso(),
+    payload: {},
+  };
+
   instance.candidatesById[candidateId] = candidate;
+
+  instance.eventsByCandidateId[candidateId] = [
+    ...(instance.eventsByCandidateId[candidateId] ?? []),
+    event,
+  ];
 
   saveInstance(instance);
 

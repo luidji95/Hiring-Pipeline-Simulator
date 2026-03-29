@@ -58,7 +58,23 @@ export type CandidateEvent =
       payload: {
         content: string;
       };
+    }
+| {
+    id: string;
+    type: "starred";
+    createdAt: string;
+    payload: {
+      message?:string;
     };
+  }
+| {
+    id: string;
+    type: "unstarred";
+    createdAt: string;
+    payload: {
+      message: string;
+    };
+  }
 
 export type WorkspaceInstance = {
   id: string;

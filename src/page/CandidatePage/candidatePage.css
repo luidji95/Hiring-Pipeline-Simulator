@@ -204,3 +204,36 @@
   color: #868e96;
   font-style: italic;
 }
+.timeline-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.timeline-item svg {
+  flex-shrink: 0;
+}
+.timeline-item--starred svg {
+  color: gold;
+}
+
+.timeline-item--unstarred svg {
+  color: #999;
+}
+.event-star {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.event-star svg {
+  flex-shrink: 0;
+}
+
+.event-star--active {
+  color: #333;
+}
+
+.event-star--inactive {
+  color: #666;
+}
