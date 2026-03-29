@@ -376,3 +376,23 @@ export const clearAllHpsData = () => {
   keysToDelete.forEach((k) => localStorage.removeItem(k));
   localStorage.removeItem(DEMO_MAP_KEY);
 };
+
+export const toggleStar = (
+  instanceId: string,
+  candidateId: string
+): WorkspaceInstance => {
+  
+  const instance = getInstance(instanceId);
+  if (!instance) throw new Error("Workspace instance not found.");
+
+  const candidate = instance.candidatesById[candidateId];
+  if (!candidate) throw new Error("Candidate not found.");
+
+  candidate.isStarred = !candidate.isStarred;
+
+  instance.candidatesById[candidateId] = candidate;
+
+  saveInstance(instance);
+
+  return instance;
+};

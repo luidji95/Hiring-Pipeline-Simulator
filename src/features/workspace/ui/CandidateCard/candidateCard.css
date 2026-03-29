@@ -32,6 +32,7 @@
   font-weight: 600;
   margin-bottom: 4px;
   color: #24292e;
+
 }
 
 .candidate-card__title {
@@ -130,4 +131,81 @@
   background: #fff5f5;
   padding: 4px;
   border-radius: 2px;
+}
+
+.candidate-card {
+  position: relative; /* OBAVEZNO */
+}
+
+/* container za ikonice */
+.candidate-card__actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+
+  display: flex;
+  gap: 6px;
+}
+
+/* osnovni stil dugmeta */
+.action-btn {
+  background: transparent;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 6px;
+  color: #888;
+
+  transition: all 0.2s ease;
+}
+
+/* SVG default */
+.action-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  transition: all 0.2s ease;
+}
+
+/* ================= STAR ================= */
+
+/* hover */
+.action-btn--star:hover {
+  transform: scale(1.1);
+}
+
+.action-btn--star:hover svg {
+  fill: rgba(255, 215, 0, 0.4);
+  stroke: gold;
+}
+
+/* active (kliknuto) */
+.action-btn--star.active svg {
+  fill: gold;
+  stroke: gold;
+}
+
+/* active hover (još lepši efekat) */
+.action-btn--star.active:hover svg {
+  fill: #ffd700;
+  transform: scale(1.15);
+}
+
+/* ================= EDIT ================= */
+
+.action-btn--edit:hover {
+  color: #4f8cff;
+  transform: scale(1.1);
+}
+
+/* ================= DELETE ================= */
+
+.action-btn--delete:hover {
+  color: #ff4d4f;
+  transform: scale(1.1);
 }

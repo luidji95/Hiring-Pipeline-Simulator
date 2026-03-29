@@ -2,6 +2,8 @@ import { useState } from "react";
 import type { Candidate, Stage } from "../../workspace.types";
 import { CandidateMoveForm } from "./CandidateMoveForm";
 import "../CandidateCard/candidateCard.css";
+import { Trash2, Star, Pencil } from "lucide-react";
+import { toggleStar } from "../../../storage/hpsStorage";
 
 type Props = {
   candidate: Candidate;
@@ -11,6 +13,8 @@ type Props = {
   stages: Stage[];
   onChange: () => void;
 };
+
+
 
 export const CandidateCard = ({ candidate, onOpen, workspaceId, stages, onChange }: Props) => {
   const [isMoving, setIsMoving] = useState(false);
@@ -24,9 +28,36 @@ export const CandidateCard = ({ candidate, onOpen, workspaceId, stages, onChange
       >
         <div className="candidate-card__name">
           {candidate.firstName} {candidate.lastName}
+          
         </div>
         <div className="candidate-card__title">{candidate.title}</div>
       </button>
+      <div className="candidate-card__actions">
+        <button
+          type="button"
+          className={`action-btn action-btn--star ${
+            candidate.isStarred ? "active" : ""
+          }`}
+         
+          onClick={() => {
+            toggleStar(workspaceId, candidate.id);
+            onChange();
+          }}
+        >
+          <Star size={16} fill={candidate.isStarred ? 'gold' : "none"} stroke={candidate.isStarred ? 'gold' : 'currentColor'} />
+        </button>
+
+        <button type="button" className="action-btn action-btn--edit">
+          <Pencil size={16} />
+        </button>
+
+        <button type="button" className="action-btn action-btn--delete">
+          <Trash2 size={16} />
+        </button>
+      </div>
+      
+      
+      
 
       <div className="candidate-card__footer">
         {!isMoving ? (

@@ -27,6 +27,7 @@ export type Candidate = {
   tags?: string[];
   stageId: StageId;
   createdAt: string; // ISO
+  isStarred?: boolean;
 };
 
 // export type CandidateEventType = "created" | "stage_moved" | "note";

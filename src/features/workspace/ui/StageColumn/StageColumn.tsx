@@ -21,6 +21,7 @@ export const StageColumn = ({
   stages,
   onChange,
 }: Props) => {
+  
   return (
     <div className="stage-column">
       <div className="stage-column__header">
@@ -38,6 +39,8 @@ export const StageColumn = ({
             candidateIds.map((id) => {
               const candidate = candidatesById[id];
               if (!candidate) return null;
+
+          
 
               return (
                 <CandidateCard
