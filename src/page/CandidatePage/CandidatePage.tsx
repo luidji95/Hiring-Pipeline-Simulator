@@ -106,9 +106,16 @@ const formatEventText = (e: CandidateEvent) => {
       </span>
     );
   }
-  if (e.type === "updated") return "Candidate profile updated";
 
-  return e.payload.content;
+  if (e.type === "updated") {
+    return "Candidate profile updated";
+  }
+
+  if (e.type === "note") {
+    return e.payload.content;
+  }
+
+  return null;
 };
 
   const handleAddNote = () => {
