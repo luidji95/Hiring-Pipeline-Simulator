@@ -21,7 +21,12 @@ export const StageColumn = ({
   stages,
   onChange,
 }: Props) => {
-  
+
+  const starredCandidateIds = candidateIds.filter((id) => candidatesById[id]?.isStarred);
+  const regularCandidateIds = candidateIds.filter((id) => !candidatesById[id]?.isStarred);
+
+  const displayCandidateIds = [...starredCandidateIds, ...regularCandidateIds];
+
   return (
     <div className="stage-column">
       <div className="stage-column__header">
@@ -36,7 +41,7 @@ export const StageColumn = ({
           {candidateIds.length === 0 ? (
             <p className="no-candidates">No candidates</p>
           ) : (
-            candidateIds.map((id) => {
+            displayCandidateIds.map((id) => {
               const candidate = candidatesById[id];
               if (!candidate) return null;
 
