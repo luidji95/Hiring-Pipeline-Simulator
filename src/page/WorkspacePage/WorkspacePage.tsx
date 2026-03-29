@@ -8,7 +8,8 @@ import { getInstance } from "../../features/storage/hpsStorage";
 import { KanbanBoard } from "../../features/workspace/ui/KanbanBoard/KanbanBoard";
 import { Topbar } from "../../features/workspace/ui/Topbar/Topbar";
 import { WorkspaceHeader } from "../../features/workspace/ui/WorkspaceHeader/WorkSpaceHeader";
-import { CandidateFormModal } from "../../features/workspace/ui/StageColumn/CandidateFormModal";
+import { CandidateFormModal } from "../../features/workspace/ui/CandidateDialogs/CandidateFormModal";
+import { DeleteCandidateModal } from "../../features/workspace/ui/CandidateDialogs/DeleteCandidateModal";
 import type { CandidateManualEntryFormData } from "../../schemas/candidate.validation";
 import "../WorkspacePage/workspacepage.css";
 
@@ -18,9 +19,11 @@ export const WorkspacePage = () => {
 
   const [instance, setInstance] = useState<WorkspaceInstance | null>(null);
   const [editingCandidate, setEditingCandidate] = useState<Candidate | null>(null);
+  const [deletingCandidate, setDeletingCandidate] = useState<Candidate | null>(null);
 
   const createCandidateModalRef = useRef<HTMLDialogElement>(null);
   const editCandidateModalRef = useRef<HTMLDialogElement>(null);
+  const deleteCandidateModalRef = useRef<HTMLDialogElement>(null);
 
   const reload = useCallback(() => {
     if (!id) return;
@@ -54,6 +57,16 @@ export const WorkspacePage = () => {
   const handleCloseEditCandidateModal = () => {
     editCandidateModalRef.current?.close();
     setEditingCandidate(null);
+  };
+
+  const handleOpenDeleteCandidateModal = (candidate: Candidate) => {
+    setDeletingCandidate(candidate);
+    deleteCandidateModalRef.current?.showModal();
+  };
+
+  const handleCloseDeleteCandidateModal = () => {
+    deleteCandidateModalRef.current?.close();
+    setDeletingCandidate(null);
   };
 
   const getEditInitialValues = (
@@ -90,6 +103,7 @@ export const WorkspacePage = () => {
           workspaceId={instance.id}
           onChange={reload}
           onEditCandidate={handleOpenEditCandidateModal}
+          onDeleteCandidate={handleOpenDeleteCandidateModal}
         />
       </div>
 
@@ -119,6 +133,17 @@ export const WorkspacePage = () => {
           handleCloseEditCandidateModal();
         }}
         onCancel={handleCloseEditCandidateModal}
+      />
+
+      <DeleteCandidateModal
+        ref={deleteCandidateModalRef}
+        workspaceId={instance.id}
+        candidate={deletingCandidate}
+        onSuccess={() => {
+          reload();
+          handleCloseDeleteCandidateModal();
+        }}
+        onCancel={handleCloseDeleteCandidateModal}
       />
     </div>
   );

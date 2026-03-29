@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { Stage, StageId } from "../../workspace.types";
 import { moveCandidate } from "../../../storage/hpsStorage";
 import "../CandidateCard/candidateCard.css";
+
 type Props = {
   workspaceId: string;
   candidateId: string;
@@ -28,7 +29,6 @@ export const CandidateMoveForm = ({
     [stages, currentStageId]
   );
 
-  // Pick a default destination stage when the form opens
   useEffect(() => {
     if (options.length === 0) return;
     if (toStageId === currentStageId) setToStageId(options[0].id);
@@ -61,9 +61,9 @@ export const CandidateMoveForm = ({
   return (
     <div className="candidate-move-form">
       <div className="move-form__row">
-        <select 
+        <select
           className="move-form__select"
-          value={toStageId} 
+          value={toStageId}
           onChange={(e) => setToStageId(e.target.value as StageId)}
         >
           {options.map((s) => (
@@ -82,9 +82,14 @@ export const CandidateMoveForm = ({
       </div>
 
       <div className="move-form__actions">
-        <button type="button" className="btn-move-submit" onClick={handleSubmit}>
+        <button
+          type="button"
+          className="btn-move-submit"
+          onClick={handleSubmit}
+        >
           Submit
         </button>
+
         <button
           type="button"
           className="btn-move-cancel"
@@ -100,5 +105,4 @@ export const CandidateMoveForm = ({
       {error ? <div className="move-form__error">{error}</div> : null}
     </div>
   );
-
 };

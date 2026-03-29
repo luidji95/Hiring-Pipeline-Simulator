@@ -12,6 +12,7 @@ type Props = {
   stages: Stage[];
   onChange: () => void;
   onEditCandidate: (candidate: Candidate) => void;
+  onDeleteCandidate: (candidate: Candidate) => void;
 };
 
 export const CandidateCard = ({
@@ -21,6 +22,7 @@ export const CandidateCard = ({
   stages,
   onChange,
   onEditCandidate,
+  onDeleteCandidate,
 }: Props) => {
   const [isMoving, setIsMoving] = useState(false);
 
@@ -58,6 +60,7 @@ export const CandidateCard = ({
           type="button"
           className="action-btn action-btn--delete"
           title="Delete candidate"
+          onClick={() => onDeleteCandidate(candidate)}
         >
           <Trash2 size={16} />
         </button>

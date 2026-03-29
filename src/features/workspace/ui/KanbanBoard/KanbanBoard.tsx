@@ -8,6 +8,7 @@ type Props = {
   workspaceId: string;
   onChange: () => void;
   onEditCandidate: (candidate: Candidate) => void;
+  onDeleteCandidate: (candidate: Candidate) => void;
 };
 
 export const KanbanBoard = ({
@@ -15,6 +16,7 @@ export const KanbanBoard = ({
   workspaceId,
   onChange,
   onEditCandidate,
+  onDeleteCandidate,
 }: Props) => {
   const navigate = useNavigate();
 
@@ -39,6 +41,7 @@ export const KanbanBoard = ({
           stages={instance.stages}
           onChange={onChange}
           onEditCandidate={onEditCandidate}
+          onDeleteCandidate={onDeleteCandidate}
         />
       ))}
     </div>

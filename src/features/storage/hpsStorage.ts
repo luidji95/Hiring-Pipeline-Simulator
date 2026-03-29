@@ -463,3 +463,26 @@ export const updateCandidate = (
   saveInstance(instance);
   return instance;
 };
+
+export const deleteCandidate = (
+  instanceId: string,
+  candidateId: string
+): WorkspaceInstance => {
+  const instance = getInstance(instanceId);
+  if (!instance) throw new Error("Workspace instance not found.");
+
+  const candidate = instance.candidatesById[candidateId];
+  if (!candidate) throw new Error("Candidate not found.");
+
+  const currentStageId = candidate.stageId;
+
+  instance.candidateIdsByStage[currentStageId] = (
+    instance.candidateIdsByStage[currentStageId] ?? []
+  ).filter((id) => id !== candidateId);
+
+  delete instance.candidatesById[candidateId];
+  delete instance.eventsByCandidateId[candidateId];
+
+  saveInstance(instance);
+  return instance;
+};

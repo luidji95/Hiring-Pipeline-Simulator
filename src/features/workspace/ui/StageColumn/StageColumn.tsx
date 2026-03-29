@@ -11,6 +11,7 @@ type Props = {
   stages: Stage[];
   onChange: () => void;
   onEditCandidate: (candidate: Candidate) => void;
+  onDeleteCandidate: (candidate: Candidate) => void;
 };
 
 export const StageColumn = ({
@@ -22,6 +23,7 @@ export const StageColumn = ({
   stages,
   onChange,
   onEditCandidate,
+  onDeleteCandidate,
 }: Props) => {
   const starredCandidateIds = candidateIds.filter(
     (id) => candidatesById[id]?.isStarred
@@ -60,6 +62,7 @@ export const StageColumn = ({
                   stages={stages}
                   onChange={onChange}
                   onEditCandidate={onEditCandidate}
+                  onDeleteCandidate={onDeleteCandidate}
                 />
               );
             })
