@@ -41,7 +41,7 @@ export const LandingPage = () => {
     setWorkspaceName("");
     refreshIndex();
 
-    // navigate(`/workspace/${id}`);
+    navigate(`/workspace/${id}`);
   };
 
   const handleOpenTemplate = (templateId: string) => {
