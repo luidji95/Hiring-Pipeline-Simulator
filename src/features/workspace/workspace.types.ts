@@ -36,7 +36,7 @@ export type CandidateEvent =
   | {
       id: string;
       type: "created";
-      createdAt: string; // ISO
+      createdAt: string;
       payload: {
         message?: string;
       };
@@ -44,37 +44,33 @@ export type CandidateEvent =
   | {
       id: string;
       type: "stage_moved";
-      createdAt: string; // ISO
+      createdAt: string;
       payload: {
         fromStageId: StageId;
         toStageId: StageId;
-        reason: string; // REQUIRED
+        reason: string;
       };
     }
   | {
       id: string;
       type: "note";
-      createdAt: string; // ISO
+      createdAt: string;
       payload: {
         content: string;
       };
     }
-| {
-    id: string;
-    type: "starred";
-    createdAt: string;
-    payload: {
-      message?:string;
+  | {
+      id: string;
+      type: "starred";
+      createdAt: string;
+      payload: {};
+    }
+  | {
+      id: string;
+      type: "unstarred";
+      createdAt: string;
+      payload: {};
     };
-  }
-| {
-    id: string;
-    type: "unstarred";
-    createdAt: string;
-    payload: {
-      message: string;
-    };
-  }
 
 export type WorkspaceInstance = {
   id: string;

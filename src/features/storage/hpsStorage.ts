@@ -393,7 +393,7 @@ export const toggleStar = (
     id: uuid(),
     type: candidate.isStarred ? "starred" : "unstarred",
     createdAt: nowIso(),
-    payload: {},
+    payload: {message},
   };
 
   instance.candidatesById[candidateId] = candidate;
