@@ -44,6 +44,7 @@ export const KanbanBoard = ({
           onDeleteCandidate={onDeleteCandidate}
         />
       ))}
+   
     </div>
   );
 };

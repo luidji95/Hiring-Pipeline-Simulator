@@ -486,3 +486,17 @@ export const deleteCandidate = (
   saveInstance(instance);
   return instance;
 };
+
+export const clearWorkspaceCandidates = (
+  instanceId: string
+): WorkspaceInstance => {
+  const instance = getInstance(instanceId);
+  if (!instance) throw new Error("Workspace instance not found.");
+
+  instance.candidatesById = {};
+  instance.eventsByCandidateId = {};
+  instance.candidateIdsByStage = emptyCandidateIdsByStage();
+
+  saveInstance(instance);
+  return instance;
+};

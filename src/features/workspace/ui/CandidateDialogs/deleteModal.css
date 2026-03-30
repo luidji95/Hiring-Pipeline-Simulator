@@ -43,3 +43,48 @@
 .btn-delete-confirm:hover {
   background: #dc2626;
 }
+.clear-modal-content {
+  max-width: 460px;
+  text-align: center;
+}
+
+.clear-modal__icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+}
+
+.clear-modal__title {
+  margin: 0 0 10px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.clear-modal__text {
+  margin: 0 0 22px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #6b7280;
+}
+
+.clear-modal__actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.btn-clear-confirm {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-clear-confirm:hover {
+  background: #dc2626;
+}

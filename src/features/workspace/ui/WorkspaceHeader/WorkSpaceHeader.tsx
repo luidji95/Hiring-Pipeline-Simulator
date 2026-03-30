@@ -6,9 +6,15 @@ type Props = {
   name: string;
   isDemo?: boolean;
   onAddCandidate: () => void;
+  onClearPipeline: () => void;
 };
 
-export const WorkspaceHeader = ({ name, isDemo, onAddCandidate }: Props) => {
+export const WorkspaceHeader = ({
+  name,
+  isDemo,
+  onAddCandidate,
+  onClearPipeline,
+}: Props) => {
   return (
     <div className="workspaceHeader">
       <div className="workspaceHeader__left">
@@ -36,6 +42,14 @@ export const WorkspaceHeader = ({ name, isDemo, onAddCandidate }: Props) => {
           onClick={onAddCandidate}
         >
           + Add Candidate
+        </Button>
+
+        <Button
+          type="button"
+          className="workspaceHeader__clearBtn"
+          onClick={onClearPipeline}
+        >
+          Clear Pipeline
         </Button>
       </div>
     </div>

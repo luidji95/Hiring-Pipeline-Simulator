@@ -10,6 +10,7 @@ import { Topbar } from "../../features/workspace/ui/Topbar/Topbar";
 import { WorkspaceHeader } from "../../features/workspace/ui/WorkspaceHeader/WorkSpaceHeader";
 import { CandidateFormModal } from "../../features/workspace/ui/CandidateDialogs/CandidateFormModal";
 import { DeleteCandidateModal } from "../../features/workspace/ui/CandidateDialogs/DeleteCandidateModal";
+import { ClearWorkspaceModal } from "../../features/workspace/ui/CandidateDialogs/ClearWorkspaceModal";
 import type { CandidateManualEntryFormData } from "../../schemas/candidate.validation";
 import "../WorkspacePage/workspacepage.css";
 
@@ -24,6 +25,7 @@ export const WorkspacePage = () => {
   const createCandidateModalRef = useRef<HTMLDialogElement>(null);
   const editCandidateModalRef = useRef<HTMLDialogElement>(null);
   const deleteCandidateModalRef = useRef<HTMLDialogElement>(null);
+  const clearWorkspaceModalRef = useRef<HTMLDialogElement>(null);
 
   const reload = useCallback(() => {
     if (!id) return;
@@ -69,6 +71,14 @@ export const WorkspacePage = () => {
     setDeletingCandidate(null);
   };
 
+  const handleOpenClearWorkspaceModal = () => {
+    clearWorkspaceModalRef.current?.showModal();
+  };
+
+  const handleCloseClearWorkspaceModal = () => {
+    clearWorkspaceModalRef.current?.close();
+  };
+
   const getEditInitialValues = (
     candidate: Candidate | null
   ): Partial<CandidateManualEntryFormData> | undefined => {
@@ -95,6 +105,7 @@ export const WorkspacePage = () => {
         name={instance.name}
         isDemo={!!instance.sourceTemplateId}
         onAddCandidate={handleOpenCreateCandidateModal}
+        onClearPipeline={handleOpenClearWorkspaceModal}
       />
 
       <div className="workspacePage__content">
@@ -144,6 +155,17 @@ export const WorkspacePage = () => {
           handleCloseDeleteCandidateModal();
         }}
         onCancel={handleCloseDeleteCandidateModal}
+      />
+
+      <ClearWorkspaceModal
+        ref={clearWorkspaceModalRef}
+        workspaceId={instance.id}
+        workspaceName={instance.name}
+        onSuccess={() => {
+          reload();
+          handleCloseClearWorkspaceModal();
+        }}
+        onCancel={handleCloseClearWorkspaceModal}
       />
     </div>
   );
