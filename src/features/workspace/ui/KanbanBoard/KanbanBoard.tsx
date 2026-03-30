@@ -10,6 +10,7 @@ type Props = {
   workspaceId: string;
   searchTerm: string;
   onChange: () => void;
+  onMoveCandidate: (candidate: Candidate) => void;
   onEditCandidate: (candidate: Candidate) => void;
   onDeleteCandidate: (candidate: Candidate) => void;
 };
@@ -21,20 +22,25 @@ export const KanbanBoard = ({
   workspaceId,
   searchTerm,
   onChange,
+  onMoveCandidate,
   onEditCandidate,
   onDeleteCandidate,
 }: Props) => {
   const navigate = useNavigate();
 
   const visibleStages = useMemo(() => {
-    return instance.stages.filter((stage) => !HIDDEN_STAGE_IDS.includes(stage.id));
+    return instance.stages.filter(
+      (stage) => !HIDDEN_STAGE_IDS.includes(stage.id)
+    );
   }, [instance.stages]);
 
   const handleOpenCandidate = (candidateId: string) => {
     navigate(`/workspace/${workspaceId}/candidate/${candidateId}`);
   };
 
-  const getFilteredCandidateIds = (stageId: keyof typeof instance.candidateIdsByStage) => {
+  const getFilteredCandidateIds = (
+    stageId: keyof typeof instance.candidateIdsByStage
+  ) => {
     const ids = instance.candidateIdsByStage[stageId] ?? [];
 
     return ids.filter((id) => {
@@ -64,8 +70,8 @@ export const KanbanBoard = ({
             candidatesById={instance.candidatesById}
             onOpenCandidate={handleOpenCandidate}
             workspaceId={workspaceId}
-            stages={instance.stages}
             onChange={onChange}
+            onMoveCandidate={onMoveCandidate}
             onEditCandidate={onEditCandidate}
             onDeleteCandidate={onDeleteCandidate}
           />

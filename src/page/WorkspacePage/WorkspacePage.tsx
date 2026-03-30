@@ -11,6 +11,7 @@ import { WorkspaceHeader } from "../../features/workspace/ui/WorkspaceHeader/Wor
 import { CandidateFormModal } from "../../features/workspace/ui/CandidateDialogs/CandidateFormModal";
 import { DeleteCandidateModal } from "../../features/workspace/ui/CandidateDialogs/DeleteCandidateModal";
 import { ClearWorkspaceModal } from "../../features/workspace/ui/CandidateDialogs/ClearWorkspaceModal";
+import { MoveCandidateModal } from "../../features/workspace/ui/CandidateDialogs/MoveCandidateModal";
 import type { CandidateManualEntryFormData } from "../../schemas/candidate.validation";
 import "../WorkspacePage/workspacepage.css";
 
@@ -20,10 +21,12 @@ export const WorkspacePage = () => {
 
   const [instance, setInstance] = useState<WorkspaceInstance | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [movingCandidate, setMovingCandidate] = useState<Candidate | null>(null);
   const [editingCandidate, setEditingCandidate] = useState<Candidate | null>(null);
   const [deletingCandidate, setDeletingCandidate] = useState<Candidate | null>(null);
 
   const createCandidateModalRef = useRef<HTMLDialogElement>(null);
+  const moveCandidateModalRef = useRef<HTMLDialogElement>(null);
   const editCandidateModalRef = useRef<HTMLDialogElement>(null);
   const deleteCandidateModalRef = useRef<HTMLDialogElement>(null);
   const clearWorkspaceModalRef = useRef<HTMLDialogElement>(null);
@@ -50,6 +53,16 @@ export const WorkspacePage = () => {
 
   const handleCloseCreateCandidateModal = () => {
     createCandidateModalRef.current?.close();
+  };
+
+  const handleOpenMoveCandidateModal = (candidate: Candidate) => {
+    setMovingCandidate(candidate);
+    moveCandidateModalRef.current?.showModal();
+  };
+
+  const handleCloseMoveCandidateModal = () => {
+    moveCandidateModalRef.current?.close();
+    setMovingCandidate(null);
   };
 
   const handleOpenEditCandidateModal = (candidate: Candidate) => {
@@ -115,6 +128,7 @@ export const WorkspacePage = () => {
           workspaceId={instance.id}
           searchTerm={searchTerm}
           onChange={reload}
+          onMoveCandidate={handleOpenMoveCandidateModal}
           onEditCandidate={handleOpenEditCandidateModal}
           onDeleteCandidate={handleOpenDeleteCandidateModal}
         />
@@ -132,6 +146,18 @@ export const WorkspacePage = () => {
           handleCloseCreateCandidateModal();
         }}
         onCancel={handleCloseCreateCandidateModal}
+      />
+
+      <MoveCandidateModal
+        ref={moveCandidateModalRef}
+        workspaceId={instance.id}
+        candidate={movingCandidate}
+        stages={instance.stages}
+        onSuccess={() => {
+          reload();
+          handleCloseMoveCandidateModal();
+        }}
+        onCancel={handleCloseMoveCandidateModal}
       />
 
       <CandidateFormModal

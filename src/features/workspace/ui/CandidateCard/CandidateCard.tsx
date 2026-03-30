@@ -1,6 +1,4 @@
-import { useState } from "react";
-import type { Candidate, Stage } from "../../workspace.types";
-import { CandidateMoveForm } from "./CandidateMoveForm";
+import type { Candidate } from "../../workspace.types";
 import "../CandidateCard/candidateCard.css";
 import { Trash2, Star, Pencil } from "lucide-react";
 import { toggleStar } from "../../../storage/hpsStorage";
@@ -9,8 +7,8 @@ type Props = {
   candidate: Candidate;
   onOpen: (candidateId: string) => void;
   workspaceId: string;
-  stages: Stage[];
   onChange: () => void;
+  onMoveCandidate: (candidate: Candidate) => void;
   onEditCandidate: (candidate: Candidate) => void;
   onDeleteCandidate: (candidate: Candidate) => void;
 };
@@ -19,13 +17,11 @@ export const CandidateCard = ({
   candidate,
   onOpen,
   workspaceId,
-  stages,
   onChange,
+  onMoveCandidate,
   onEditCandidate,
   onDeleteCandidate,
 }: Props) => {
-  const [isMoving, setIsMoving] = useState(false);
-
   return (
     <div className="candidate-card">
       <div className="candidate-card__actions">
@@ -78,27 +74,13 @@ export const CandidateCard = ({
       </button>
 
       <div className="candidate-card__footer">
-        {!isMoving ? (
-          <button
-            type="button"
-            className="btn-move-trigger"
-            onClick={() => setIsMoving(true)}
-          >
-            Move
-          </button>
-        ) : (
-          <CandidateMoveForm
-            workspaceId={workspaceId}
-            candidateId={candidate.id}
-            currentStageId={candidate.stageId}
-            stages={stages}
-            onSuccess={() => {
-              onChange();
-              setIsMoving(false);
-            }}
-            onCancel={() => setIsMoving(false)}
-          />
-        )}
+        <button
+          type="button"
+          className="btn-move-trigger"
+          onClick={() => onMoveCandidate(candidate)}
+        >
+          Move
+        </button>
       </div>
     </div>
   );

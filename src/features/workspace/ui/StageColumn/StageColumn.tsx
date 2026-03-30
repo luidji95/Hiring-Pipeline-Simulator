@@ -8,8 +8,8 @@ type Props = {
   candidatesById: Record<string, Candidate>;
   onOpenCandidate: (candidateId: string) => void;
   workspaceId: string;
-  stages: Stage[];
   onChange: () => void;
+  onMoveCandidate: (candidate: Candidate) => void;
   onEditCandidate: (candidate: Candidate) => void;
   onDeleteCandidate: (candidate: Candidate) => void;
 };
@@ -20,8 +20,8 @@ export const StageColumn = ({
   candidatesById,
   onOpenCandidate,
   workspaceId,
-  stages,
   onChange,
+  onMoveCandidate,
   onEditCandidate,
   onDeleteCandidate,
 }: Props) => {
@@ -59,8 +59,8 @@ export const StageColumn = ({
                   candidate={candidate}
                   onOpen={onOpenCandidate}
                   workspaceId={workspaceId}
-                  stages={stages}
                   onChange={onChange}
+                  onMoveCandidate={onMoveCandidate}
                   onEditCandidate={onEditCandidate}
                   onDeleteCandidate={onDeleteCandidate}
                 />
