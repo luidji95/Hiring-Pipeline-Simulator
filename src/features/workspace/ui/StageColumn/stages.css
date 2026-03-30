@@ -1,13 +1,18 @@
 .stage-column {
-    
-    flex: 1; 
-    min-width: 0; 
-    max-width: 350px; 
-    
-    background-color: #ebedef;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  max-width: 350px;
+
+  background-color: #ebedef;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  max-height: 70vh;
+}
+.stage-column__content {
+  flex: 1;
+  min-height: 0;
+  padding: 0 12px 12px 12px;
 }
 
 .stage-column__header {
@@ -32,12 +37,14 @@
   margin-left: 8px;
 }
 
-.stage-column__list {
-  padding: 0 12px 12px 12px;
+.stage__list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   overflow-y: auto;
+  max-height: 100%;
+  min-height: 0;
+  padding-right: 4px;
 }
 
 .btn-add-candidate {

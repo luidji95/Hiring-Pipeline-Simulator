@@ -1,12 +1,11 @@
 .kanban-board {
-    display: flex;
-    gap: 1rem; 
-    padding: 1.5rem;
-    background-color: #f8f9fa;
-    align-items: flex-start;
-    min-height: calc(100vh - 100px);
-    
-    
-    justify-content: space-between; 
-    overflow-x: hidden; 
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  align-items: stretch;
+  height: calc(100vh - 100px);
+  justify-content: space-between;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
