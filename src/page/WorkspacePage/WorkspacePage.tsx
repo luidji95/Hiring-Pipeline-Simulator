@@ -19,6 +19,7 @@ export const WorkspacePage = () => {
   const navigate = useNavigate();
 
   const [instance, setInstance] = useState<WorkspaceInstance | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const [editingCandidate, setEditingCandidate] = useState<Candidate | null>(null);
   const [deletingCandidate, setDeletingCandidate] = useState<Candidate | null>(null);
 
@@ -99,7 +100,7 @@ export const WorkspacePage = () => {
 
   return (
     <div className="workspacePage">
-      <Topbar />
+      <Topbar searchValue={searchTerm} onSearchChange={setSearchTerm} />
 
       <WorkspaceHeader
         name={instance.name}
@@ -112,6 +113,7 @@ export const WorkspacePage = () => {
         <KanbanBoard
           instance={instance}
           workspaceId={instance.id}
+          searchTerm={searchTerm}
           onChange={reload}
           onEditCandidate={handleOpenEditCandidateModal}
           onDeleteCandidate={handleOpenDeleteCandidateModal}

@@ -1,6 +1,11 @@
 import "../Topbar/topbar.css";
 
-export const Topbar = () => {
+type Props = {
+  searchValue: string;
+  onSearchChange: (value: string) => void;
+};
+
+export const Topbar = ({ searchValue, onSearchChange }: Props) => {
   return (
     <header className="topbar">
       <div className="topbar__inner">
@@ -29,7 +34,9 @@ export const Topbar = () => {
             <input
               className="topbar__searchInput"
               type="text"
-              placeholder="Search candidates..."
+              placeholder="Search by name, title, company, location, tags..."
+              value={searchValue}
+              onChange={(e) => onSearchChange(e.target.value)}
             />
           </div>
         </div>
@@ -39,7 +46,10 @@ export const Topbar = () => {
             Statistics
           </button>
 
-          <button type="button" className="topbar__action topbar__action--primary">
+          <button
+            type="button"
+            className="topbar__action topbar__action--primary"
+          >
             Theme
           </button>
         </div>
@@ -47,4 +57,3 @@ export const Topbar = () => {
     </header>
   );
 };
-
