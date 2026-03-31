@@ -1,0 +1,146 @@
+.board-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  padding: 16px 24px;
+
+
+  background: #ffffff;
+
+}
+
+.board-controls__left {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.board-controls__right {
+  display: flex;
+  align-items: center;
+}
+
+.board-controls__group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 180px;
+}
+
+.board-controls__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.board-controls__select {
+  height: 40px;
+  padding: 0 12px;
+
+  background: #ffffff;
+  color: #111827;
+
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.board-controls__select:hover {
+  border-color: #9ca3af;
+}
+
+.board-controls__select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.board-controls__checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  height: 40px;
+  padding: 0 4px;
+
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+}
+
+.board-controls__checkbox input {
+  width: 16px;
+  height: 16px;
+  accent-color: #3b82f6;
+  cursor: pointer;
+}
+
+.board-controls__clearBtn {
+  height: 40px;
+  padding: 0 14px;
+
+  background: transparent;
+  color: #374151;
+
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.board-controls__clearBtn:hover:not(:disabled) {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.board-controls__clearBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .board-controls {
+    margin: 0 16px 16px;
+    padding: 16px;
+  }
+
+  .board-controls__group {
+    min-width: 150px;
+    flex: 1 1 150px;
+  }
+}
+
+@media (max-width: 640px) {
+  .board-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .board-controls__left {
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .board-controls__right {
+    width: 100%;
+  }
+
+  .board-controls__clearBtn {
+    width: 100%;
+  }
+
+  .board-controls__group {
+    min-width: 100%;
+  }
+}

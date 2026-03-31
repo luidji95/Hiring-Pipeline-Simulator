@@ -12,6 +12,11 @@ import { CandidateFormModal } from "../../features/workspace/ui/CandidateDialogs
 import { DeleteCandidateModal } from "../../features/workspace/ui/CandidateDialogs/DeleteCandidateModal";
 import { ClearWorkspaceModal } from "../../features/workspace/ui/CandidateDialogs/ClearWorkspaceModal";
 import { MoveCandidateModal } from "../../features/workspace/ui/CandidateDialogs/MoveCandidateModal";
+import {
+  BoardControls,
+  type BoardFilters,
+  type BoardSortOption,
+} from "../../features/workspace/ui/BoardControls/BoardControls";
 import type { CandidateManualEntryFormData } from "../../schemas/candidate.validation";
 import "../WorkspacePage/workspacepage.css";
 
@@ -24,6 +29,14 @@ export const WorkspacePage = () => {
   const [movingCandidate, setMovingCandidate] = useState<Candidate | null>(null);
   const [editingCandidate, setEditingCandidate] = useState<Candidate | null>(null);
   const [deletingCandidate, setDeletingCandidate] = useState<Candidate | null>(null);
+
+  const [filters, setFilters] = useState<BoardFilters>({
+    location: "",
+    tag: "",
+    starredOnly: false,
+  });
+
+  const [sortBy, setSortBy] = useState<BoardSortOption>("newest");
 
   const createCandidateModalRef = useRef<HTMLDialogElement>(null);
   const moveCandidateModalRef = useRef<HTMLDialogElement>(null);
@@ -93,6 +106,15 @@ export const WorkspacePage = () => {
     clearWorkspaceModalRef.current?.close();
   };
 
+  const handleClearAllControls = () => {
+    setFilters({
+      location: "",
+      tag: "",
+      starredOnly: false,
+    });
+    setSortBy("newest");
+  };
+
   const getEditInitialValues = (
     candidate: Candidate | null
   ): Partial<CandidateManualEntryFormData> | undefined => {
@@ -111,6 +133,24 @@ export const WorkspacePage = () => {
 
   if (!instance) return null;
 
+  const candidates = Object.values(instance.candidatesById);
+
+  const availableLocations = Array.from(
+    new Set(
+      candidates
+        .map((candidate) => candidate.location?.trim())
+        .filter((location): location is string => Boolean(location))
+    )
+  ).sort((a, b) => a.localeCompare(b));
+
+  const availableTags = Array.from(
+    new Set(
+      candidates.flatMap((candidate) =>
+        (candidate.tags ?? []).map((tag) => tag.trim()).filter(Boolean)
+      )
+    )
+  ).sort((a, b) => a.localeCompare(b));
+
   return (
     <div className="workspacePage">
       <Topbar searchValue={searchTerm} onSearchChange={setSearchTerm} />
@@ -122,11 +162,23 @@ export const WorkspacePage = () => {
         onClearPipeline={handleOpenClearWorkspaceModal}
       />
 
+      <BoardControls
+        filters={filters}
+        sortBy={sortBy}
+        availableLocations={availableLocations}
+        availableTags={availableTags}
+        onFiltersChange={setFilters}
+        onSortChange={setSortBy}
+        onClearAll={handleClearAllControls}
+      />
+
       <div className="workspacePage__content">
         <KanbanBoard
           instance={instance}
           workspaceId={instance.id}
           searchTerm={searchTerm}
+          filters={filters}
+          sortBy={sortBy}
           onChange={reload}
           onMoveCandidate={handleOpenMoveCandidateModal}
           onEditCandidate={handleOpenEditCandidateModal}
