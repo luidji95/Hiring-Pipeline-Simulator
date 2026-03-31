@@ -1,73 +1,130 @@
-# React + TypeScript + Vite
+#  Hiring Pipeline Simulator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, local-first recruitment workflow simulator built with **React + TypeScript**, designed to model real-world hiring pipelines with advanced state management, timeline tracking, and interactive UI.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+##  Overview
 
-## React Compiler
+Hiring Pipeline Simulator is a Kanban-based application that allows you to:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Track candidates across multiple hiring stages
+- Maintain a full audit trail of candidate actions
+- Simulate real recruitment workflows
+- Analyze pipeline behavior with structured data
 
-## Expanding the ESLint configuration
+This project focuses on **clean architecture, normalized state, and realistic product behavior**, rather than just UI.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+##  Core Concepts
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+###  Pipeline Workflow
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Candidates move through stages:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+New → Screening → HR → Technical → Final → Offer → Hired / Rejected
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+###  Candidate Timeline (Audit Trail)
+
+Each candidate has a full history:
+
+- Created
+- Stage changes (with reason)
+- Notes
+- Starred / Unstarred
+- Updates
+
+ This ensures **traceability and realistic hiring flow simulation**
+
+---
+
+###  Normalized Data Structure
+
+Instead of storing everything in arrays:
+
+- `candidatesById`
+- `candidateIdsByStage`
+- `eventsByCandidateId`
+
+This prevents:
+- data duplication
+- sync issues
+- complex mutations
+
+---
+
+##  Features
+
+###  Core Features
+
+- Multi-stage Kanban board
+- Candidate creation & editing
+- Move candidates between stages (with reason)
+- Delete candidates
+- Clear entire pipeline
+- Star / prioritize candidates
+- Candidate detail page with timeline
+
+---
+
+###  Search & Filtering
+
+- Global search (name, location, etc.)
+- Filter by:
+  - location
+  - tags
+  - starred candidates
+- Sorting:
+  - newest / oldest
+  - name A–Z / Z–A
+
+---
+
+###  Board Controls
+
+Dedicated control panel for:
+
+- filtering
+- sorting
+- clearing filters
+
+---
+
+###  UI/UX
+
+- Modal-based interactions (create, edit, move, delete)
+- Consistent dialog system
+- Clean separation of concerns
+- Responsive layout
+
+---
+
+###  Local Persistence
+
+- Uses `localStorage`
+- Multiple isolated workspaces
+- No backend required
+
+---
+
+##  Tech Stack
+
+- React
+- TypeScript
+- React Router
+- Zod (validation)
+- LocalStorage (persistence)
+- Custom UI Components
+
+---
+
+##  Notes
+
+- This is a simulation tool, not a production ATS
+- All data is stored locally
+- Designed for demonstration and portfolio purposes
+
+---
