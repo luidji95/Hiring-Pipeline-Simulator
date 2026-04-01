@@ -450,7 +450,7 @@ export const updateCandidate = (
 
   const event: CandidateEvent = {
     id: uuid(),
-    type: "updated",
+    type: "update",
     createdAt: nowIso(),
     payload: {},
   };

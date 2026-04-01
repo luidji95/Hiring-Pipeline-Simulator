@@ -107,7 +107,7 @@ const formatEventText = (e: CandidateEvent) => {
     );
   }
 
-  if (e.type === "updated") {
+  if (e.type === "update") {
     return "Candidate profile updated";
   }
 

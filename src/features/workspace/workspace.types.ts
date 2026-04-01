@@ -73,7 +73,7 @@ export type CandidateEvent =
     }
   | {
       id:string;
-      type: "updated";
+      type: "update";
       createdAt: string;
       payload: {};
     }
