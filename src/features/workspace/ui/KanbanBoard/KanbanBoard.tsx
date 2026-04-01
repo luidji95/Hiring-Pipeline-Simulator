@@ -6,7 +6,7 @@ import {
   DragOverlay,
   pointerWithin,
 } from "@dnd-kit/core";
-import type { WorkspaceInstance, Candidate } from "../../workspace.types";
+import type { WorkspaceInstance, Candidate, StageId } from "../../workspace.types";
 import { StageColumn } from "../StageColumn/StageColumn";
 import { candidateMatchesSearch } from "../../utils/search";
 import type {
@@ -31,7 +31,7 @@ type Props = {
   onDeleteCandidate: (candidate: Candidate) => void;
 };
 
-const HIDDEN_STAGE_IDS = ["new", "hired", "rejected"] as const;
+const HIDDEN_STAGE_IDS : StageId[] = ["new", "hired", "rejected"] as const;
 
 const normalize = (value?: string) => value?.trim().toLowerCase() ?? "";
 
@@ -148,7 +148,7 @@ export const KanbanBoard = ({
     if (!over) return;
 
     const sourceColumnId = active.data.current?.sourceColumn;
-    const targetColumnId = over.id;
+    const targetColumnId = String(over.id);
 
     if (sourceColumnId && targetColumnId && sourceColumnId !== targetColumnId) {
       const candidate = Object.values(instance.candidatesById).find(
