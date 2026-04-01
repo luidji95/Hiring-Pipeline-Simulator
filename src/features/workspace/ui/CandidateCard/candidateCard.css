@@ -1,4 +1,4 @@
-/* Glavni kontejner kartice */
+
 .candidate-card {
   background: #ffffff;
   border: 1px solid #e1e4e8;
@@ -15,7 +15,7 @@
   border-color: #d1d5da;
 }
 
-/* Button koji služi kao wrapper za podatke o kandidatu */
+
 .candidate-card__info-btn {
   display: block;
   width: 100%;
@@ -41,11 +41,13 @@
   font-weight: 400;
 }
 
-/* Deo za "Move" akciju */
+
 .candidate-card__footer {
   margin-top: 12px;
   padding-top: 10px;
   border-top: 1px solid #f6f8fa;
+  display: flex;
+  justify-content: space-between;
 }
 
 .btn-move-trigger {
@@ -65,7 +67,7 @@
   border-color: #ced4da;
 }
 
-/* Forma za pomeranje kandidata unutar kartice */
+
 .candidate-move-form {
   background: #f1f3f5;
   padding: 10px;
@@ -134,10 +136,10 @@
 }
 
 .candidate-card {
-  position: relative; /* OBAVEZNO */
+  position: relative; 
 }
 
-/* container za ikonice */
+
 .candidate-card__actions {
   position: absolute;
   top: 8px;
@@ -147,7 +149,7 @@
   gap: 6px;
 }
 
-/* osnovni stil dugmeta */
+
 .action-btn {
   background: transparent;
   border: none;
@@ -164,7 +166,7 @@
   transition: all 0.2s ease;
 }
 
-/* SVG default */
+
 .action-btn svg {
   width: 16px;
   height: 16px;
@@ -172,9 +174,9 @@
   transition: all 0.2s ease;
 }
 
-/* ================= STAR ================= */
 
-/* hover */
+
+
 .action-btn--star:hover {
   transform: scale(1.1);
 }
@@ -184,28 +186,42 @@
   stroke: gold;
 }
 
-/* active (kliknuto) */
+
 .action-btn--star.active svg {
   fill: gold;
   stroke: gold;
 }
 
-/* active hover (još lepši efekat) */
+
 .action-btn--star.active:hover svg {
   fill: #ffd700;
   transform: scale(1.15);
 }
 
-/* ================= EDIT ================= */
+
 
 .action-btn--edit:hover {
   color: #4f8cff;
   transform: scale(1.1);
 }
 
-/* ================= DELETE ================= */
+
 
 .action-btn--delete:hover {
   color: #ff4d4f;
   transform: scale(1.1);
 }
+
+.candidate-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px 0 12px;
+  gap: 8px;
+}
+
+.candidate-card__actions {
+  display: flex;
+  gap: 4px;
+}
+

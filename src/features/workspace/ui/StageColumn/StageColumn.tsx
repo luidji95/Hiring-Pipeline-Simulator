@@ -1,4 +1,6 @@
-import { CandidateCard } from "../CandidateCard/CandidateCard";
+
+import { useDroppable } from "@dnd-kit/core";
+import { DraggableCandidate } from "../CandidateCard/DraggableCandidate";
 import type { Candidate, Stage } from "../../workspace.types";
 import "../StageColumn/stages.css";
 
@@ -9,7 +11,7 @@ type Props = {
   onOpenCandidate: (candidateId: string) => void;
   workspaceId: string;
   onChange: () => void;
-  onMoveCandidate: (candidate: Candidate) => void;
+  onMoveCandidate: (candidate: Candidate, stageId?: string) => void;
   onEditCandidate: (candidate: Candidate) => void;
   onDeleteCandidate: (candidate: Candidate) => void;
 };
@@ -25,6 +27,13 @@ export const StageColumn = ({
   onEditCandidate,
   onDeleteCandidate,
 }: Props) => {
+  const { setNodeRef, isOver } = useDroppable({
+    id: stage.id,
+    data: {
+      stage,
+    },
+  });
+
   const starredCandidateIds = candidateIds.filter(
     (id) => candidatesById[id]?.isStarred
   );
@@ -36,7 +45,10 @@ export const StageColumn = ({
   const displayCandidateIds = [...starredCandidateIds, ...regularCandidateIds];
 
   return (
-    <div className="stage-column">
+    <div
+      ref={setNodeRef}
+      className={`stage-column ${isOver ? "drag-over" : ""}`}
+    >
       <div className="stage-column__header">
         <h3 className="stage-column__title">
           {stage.label}{" "}
@@ -54,9 +66,10 @@ export const StageColumn = ({
               if (!candidate) return null;
 
               return (
-                <CandidateCard
+                <DraggableCandidate
                   key={id}
                   candidate={candidate}
+                  sourceColumnId={stage.id}
                   onOpen={onOpenCandidate}
                   workspaceId={workspaceId}
                   onChange={onChange}

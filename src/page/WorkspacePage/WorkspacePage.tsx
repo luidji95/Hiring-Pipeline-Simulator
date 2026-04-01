@@ -44,6 +44,8 @@ export const WorkspacePage = () => {
   const deleteCandidateModalRef = useRef<HTMLDialogElement>(null);
   const clearWorkspaceModalRef = useRef<HTMLDialogElement>(null);
 
+  const [preselectedStageId, setPreselectedStageId] = useState<string | undefined>();
+
   const reload = useCallback(() => {
     if (!id) return;
 
@@ -68,15 +70,18 @@ export const WorkspacePage = () => {
     createCandidateModalRef.current?.close();
   };
 
-  const handleOpenMoveCandidateModal = (candidate: Candidate) => {
-    setMovingCandidate(candidate);
-    moveCandidateModalRef.current?.showModal();
-  };
 
-  const handleCloseMoveCandidateModal = () => {
-    moveCandidateModalRef.current?.close();
-    setMovingCandidate(null);
-  };
+const handleOpenMoveCandidateModal = (candidate: Candidate, stageId?: string) => {
+  setMovingCandidate(candidate);
+  setPreselectedStageId(stageId);
+  moveCandidateModalRef.current?.showModal();
+};
+
+const handleCloseMoveCandidateModal = () => {
+  moveCandidateModalRef.current?.close();
+  setMovingCandidate(null);
+  setPreselectedStageId(undefined);
+};
 
   const handleOpenEditCandidateModal = (candidate: Candidate) => {
     setEditingCandidate(candidate);
@@ -205,6 +210,8 @@ export const WorkspacePage = () => {
         workspaceId={instance.id}
         candidate={movingCandidate}
         stages={instance.stages}
+        preselectedStageId={preselectedStageId}
+
         onSuccess={() => {
           reload();
           handleCloseMoveCandidateModal();

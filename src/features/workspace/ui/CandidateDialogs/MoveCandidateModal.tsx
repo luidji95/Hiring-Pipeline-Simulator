@@ -1,8 +1,8 @@
+
 import React, { useEffect, useMemo, useState } from "react";
 import { moveCandidate } from "../../../storage/hpsStorage";
 import type { Candidate, Stage, StageId } from "../../workspace.types";
 import { Button } from "../../../../ui-components";
-
 
 type Props = {
   workspaceId: string;
@@ -10,10 +10,11 @@ type Props = {
   stages: Stage[];
   onSuccess: () => void;
   onCancel: () => void;
+  preselectedStageId?: string; 
 };
 
 export const MoveCandidateModal = React.forwardRef<HTMLDialogElement, Props>(
-  ({ workspaceId, candidate, stages, onSuccess, onCancel }, ref) => {
+  ({ workspaceId, candidate, stages, onSuccess, onCancel, preselectedStageId }, ref) => {
     const [toStageId, setToStageId] = useState<StageId | "">("");
     const [reason, setReason] = useState("");
     const [error, setError] = useState<string | null>(null);
@@ -29,10 +30,16 @@ export const MoveCandidateModal = React.forwardRef<HTMLDialogElement, Props>(
         return;
       }
 
-      setToStageId(availableStages[0].id);
+      // Ako postoji preselectedStageId, postavi njega
+      if (preselectedStageId && availableStages.some(s => s.id === preselectedStageId)) {
+        setToStageId(preselectedStageId as StageId);
+      } else {
+        setToStageId(availableStages[0].id);
+      }
+      
       setReason("");
       setError(null);
-    }, [candidate, availableStages]);
+    }, [candidate, availableStages, preselectedStageId]);
 
     const handleClose = () => {
       setReason("");

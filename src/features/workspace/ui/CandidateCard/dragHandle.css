@@ -1,0 +1,41 @@
+
+.drag-handle {
+  cursor: grab;
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background 0.2s;
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.drag-handle:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.drag-handle__dots {
+  display: grid;
+  grid-template-columns: repeat(5, 4px);
+  grid-template-rows: repeat(2, 4px);
+  gap: 4px;
+  padding: 2px;
+}
+
+.drag-handle__dot {
+  width: 4px;
+  height: 4px;
+  background-color: #999;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.drag-handle:hover .drag-handle__dot {
+  background-color: #4a90e2;
+}

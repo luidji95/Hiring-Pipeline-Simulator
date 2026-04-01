@@ -1,5 +1,11 @@
-import { useMemo } from "react";
+
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  DndContext,
+  DragOverlay,
+  pointerWithin,
+} from "@dnd-kit/core";
 import type { WorkspaceInstance, Candidate } from "../../workspace.types";
 import { StageColumn } from "../StageColumn/StageColumn";
 import { candidateMatchesSearch } from "../../utils/search";
@@ -7,7 +13,11 @@ import type {
   BoardFilters,
   BoardSortOption,
 } from "../BoardControls/BoardControls";
+import { DragHandle } from "../CandidateCard/DragHandle";
+import { Star, Pencil, Trash2 } from "lucide-react";
 import "../KanbanBoard/kanban.css";
+
+import type { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
 
 type Props = {
   instance: WorkspaceInstance;
@@ -16,7 +26,7 @@ type Props = {
   filters: BoardFilters;
   sortBy: BoardSortOption;
   onChange: () => void;
-  onMoveCandidate: (candidate: Candidate) => void;
+  onMoveCandidate: (candidate: Candidate, stageId?: string) => void;
   onEditCandidate: (candidate: Candidate) => void;
   onDeleteCandidate: (candidate: Candidate) => void;
 };
@@ -92,6 +102,7 @@ export const KanbanBoard = ({
   onDeleteCandidate,
 }: Props) => {
   const navigate = useNavigate();
+  const [activeCandidate, setActiveCandidate] = useState<Candidate | null>(null);
 
   const visibleStages = useMemo(() => {
     return instance.stages.filter(
@@ -119,6 +130,38 @@ export const KanbanBoard = ({
     return sortedCandidates.map((candidate) => candidate.id);
   };
 
+  const handleDragStart = (event: DragStartEvent) => {
+    const { active } = event;
+    const candidate = Object.values(instance.candidatesById).find(
+      (c) => c.id === active.id
+    );
+    if (candidate) {
+      setActiveCandidate(candidate);
+    }
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    
+    setActiveCandidate(null);
+
+    if (!over) return;
+
+    const sourceColumnId = active.data.current?.sourceColumn;
+    const targetColumnId = over.id;
+
+    if (sourceColumnId && targetColumnId && sourceColumnId !== targetColumnId) {
+      const candidate = Object.values(instance.candidatesById).find(
+        (c) => c.id === active.id
+      );
+      
+      if (candidate) {
+        // Prosledi targetColumnId kao drugi argument
+        onMoveCandidate(candidate, targetColumnId);
+      }
+    }
+  };
+
   const hasAnyMatches = visibleStages.some(
     (stage) => getVisibleCandidateIdsForStage(stage.id).length > 0
   );
@@ -130,27 +173,56 @@ export const KanbanBoard = ({
     filters.starredOnly;
 
   return (
-    <div className="kanban-board">
-      {hasActiveControls && !hasAnyMatches ? (
-        <div className="kanban-board__empty">
-          No candidates match your current search and filters.
-        </div>
-      ) : (
-        visibleStages.map((stage) => (
-          <StageColumn
-            key={stage.id}
-            stage={stage}
-            candidateIds={getVisibleCandidateIdsForStage(stage.id)}
-            candidatesById={instance.candidatesById}
-            onOpenCandidate={handleOpenCandidate}
-            workspaceId={workspaceId}
-            onChange={onChange}
-            onMoveCandidate={onMoveCandidate}
-            onEditCandidate={onEditCandidate}
-            onDeleteCandidate={onDeleteCandidate}
-          />
-        ))
-      )}
-    </div>
+    <DndContext
+      collisionDetection={pointerWithin}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
+      <div className="kanban-board">
+        {hasActiveControls && !hasAnyMatches ? (
+          <div className="kanban-board__empty">
+            No candidates match your current search and filters.
+          </div>
+        ) : (
+          visibleStages.map((stage) => (
+            <StageColumn
+              key={stage.id}
+              stage={stage}
+              candidateIds={getVisibleCandidateIdsForStage(stage.id)}
+              candidatesById={instance.candidatesById}
+              onOpenCandidate={handleOpenCandidate}
+              workspaceId={workspaceId}
+              onChange={onChange}
+              onMoveCandidate={onMoveCandidate}
+              onEditCandidate={onEditCandidate}
+              onDeleteCandidate={onDeleteCandidate}
+            />
+          ))
+        )}
+      </div>
+      
+      <DragOverlay>
+        {activeCandidate ? (
+          <div className="drag-overlay">
+            <div className="candidate-card dragging-overlay">
+              <div className="candidate-card__header">
+                <DragHandle />
+                <div className="candidate-card__actions">
+                  <Star size={16} />
+                  <Pencil size={16} />
+                  <Trash2 size={16} />
+                </div>
+              </div>
+              <div className="candidate-card__info-btn">
+                <div className="candidate-card__name">
+                  {activeCandidate.firstName} {activeCandidate.lastName}
+                </div>
+                <div className="candidate-card__title">{activeCandidate.title}</div>
+              </div>
+            </div>
+          </div>
+        ) : null}
+      </DragOverlay>
+    </DndContext>
   );
 };

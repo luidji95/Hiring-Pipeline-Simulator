@@ -98,7 +98,7 @@
   background: rgba(0, 0, 0, 0.5);
 }
 
-/* container */
+
 .move-modal-content {
   width: min(560px, 92vw);
   max-width: 560px;
@@ -117,14 +117,14 @@
   gap: 18px;
 }
 
-/* title */
+
 .move-modal__title {
   font-size: 22px;
   font-weight: 700;
   color: #111827;
 }
 
-/* summary */
+
 .move-modal__summary {
   padding: 12px 14px;
   background: #f9fafb;
@@ -143,7 +143,7 @@
   margin-top: 4px;
 }
 
-/* form layout */
+
 .move-modal__body {
   display: flex;
   flex-direction: column;
@@ -158,7 +158,7 @@
   color: #374151;
 }
 
-/* select */
+
 .move-modal__select {
   background: #ffffff;
   color: #111827;
@@ -181,7 +181,7 @@
   border-color: #9ca3af;
 }
 
-/* textarea */
+
 .move-modal__textarea {
   background: #ffffff;
   color: #111827;
@@ -206,20 +206,20 @@
   border-color: #9ca3af;
 }
 
-/* error */
+
 .move-modal__error {
   font-size: 13px;
   color: #ef4444;
 }
 
-/* actions */
+
 .move-modal__actions {
   display: flex;
   justify-content: center;
   gap: 12px;
 }
 
-/* buttons */
+
 .btn-submit {
   background: #3b82f6;
   color: white;
